@@ -24,7 +24,7 @@ function AutocompleteField(props) {
                 break;
             case "Наименование товара":
                 const obj = props.item.controlValue;
-                const index = obj.indexOf(props.item.value);
+                const index = obj?.indexOf(props.item.value);
                 const product = props.item.value !== "" && obj ? obj.find((el) => el === props.item.value) : "";
                 if (!product) {
                     const results = {index: props.item?.index || "", label: props.item?.value || ""};
@@ -33,7 +33,7 @@ function AutocompleteField(props) {
                 const res = {index: index || "", label: product || ""};
                 setLabel(res);
                 break;
-            case "Номер договора":
+            case "Основания отгрузки":
                 const dogovor = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
                 setLabel(dogovor);
                 break;

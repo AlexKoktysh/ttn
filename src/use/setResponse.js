@@ -1,19 +1,19 @@
-export const setResponseMapper = (items, response) => {
-    const result = items?.map((element) => setResponse_custom(element, response));
+export const setResponseMapper = (items, response, allResponse) => {
+    const result = items?.map((element) => setResponse_custom(element, response, allResponse));
     return result;
 };
-export const changeLabel = (items, currencyCode) => {
+export const changeLabel = (items, value) => {
     const result = items?.map((element) => {
         const element_name = element.fieldName;
         switch (element_name) {
             case "product_price":
-                return {...element, label: `${element.label} ${currencyCode}`};
+                return {...element, label: `${element.label} ${value}`};
             case "product_cost":
-                return {...element, label: `${element.label} ${currencyCode}`};
+                return {...element, label: `${element.label} ${value}`};
             case "ttn_product_vat_sum":
-                return {...element, label: `${element.label} ${currencyCode}`};
+                return {...element, label: `${element.label} ${value}`};
             case "product_cost_with_vat":
-                return {...element, label: `${element.label} ${currencyCode}`};
+                return {...element, label: `${element.label} ${value}`};
             default:
                 return element;
         }
@@ -21,9 +21,26 @@ export const changeLabel = (items, currencyCode) => {
     return result;
 };
 
-const setResponse_custom = (element, response) => {
+export const getValueLabel = (value) => {
+    switch(value) {
+        case 2:
+            return "BYN";
+        case 3:
+            return "RUB";
+        case 4:
+            return "USD";
+        case 5:
+            return "EUR";
+        default:
+            return null;
+    }
+};
+
+const setResponse_custom = (element, response, allResponse) => {
     const element_name = element.fieldName;
     switch (element_name) {
+        case "shipment_grounds":
+            return getDogovorCurrencies(element, allResponse);
         case "allowed_person_id":
             return getCurrencies(element, response, false, "last_name");
         case "handed_person_id":
@@ -37,6 +54,17 @@ const setResponse_custom = (element, response) => {
         default:
             return element;
     }
+};
+const getDogovorCurrencies = (element, response) => {
+    if (response) {
+        return {
+            ...element,
+            currencies: response.map((el, index) => {
+                return { index: index, label: `${el.doc_number} от ${el.doc_start_date}` };
+            }),
+        };
+    }
+    return element;
 };
 const getCurrencies = (element, response, isControl, label, control_response) => {
     const isArray = Array.isArray(response);

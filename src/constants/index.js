@@ -1,6 +1,15 @@
 export const contrAgents_default = [
     { index: "0", value: "", label: "Дата отгрузки", date: true, require: true, fieldName: "shipping_date" },
-    { index: "1", value: "", label: "Основания отгрузки", require: false, fieldName: "shipment_grounds" },
+    {
+        index: "1",
+        value: "",
+        label: "Основания отгрузки",
+        select: true,
+        autocomplete: true,
+        currencies: [],
+        require: true,
+        fieldName: "shipment_grounds",
+    },
     {
         index: "2",
         value: "",
@@ -90,8 +99,6 @@ export const availableTransport_default = [
 ];
 
 export const steps = [
-    // { index: "0", value: "1", label: "1" },
-    // { index: "1", value: "2", label: "2" },
     { index: "0", value: "1", label: "1" },
     { index: "1", value: "2", label: "2" },
 ];

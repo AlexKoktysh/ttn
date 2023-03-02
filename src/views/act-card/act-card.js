@@ -41,23 +41,34 @@ function ActCard(props) {
     const addProduct = (item, value) => {
         props.addProduct(item, value);
     };
+    const saveShipment = (item, value) => {
+        props.saveShipment(item, value);
+    };
     const changeDate = (label, value) => {
         props.changeDate(label, value);
     };
     const listItems = props.items?.map((item) =>
         !item.header
-            ? <TextFieldControl commodityDictionary={props.commodityDictionary} item={item} key={item.index} change={change} addCar={addCar} addProduct={addProduct} changeDate={changeDate} getNewCurrencies={props.getNewCurrencies} />
+            ? <TextFieldControl commodityDictionary={props.commodityDictionary} item={item} key={item.index} change={change} addCar={addCar} addProduct={addProduct} saveShipment={saveShipment} changeDate={changeDate} getNewCurrencies={props.getNewCurrencies} />
             : <div key={item.index} className="header">{item.header}</div>
     );
 
     return (
         <div id="card">
             <div className="form">
-                {step === "2" && <Form label="Позиция" value={localPosition} items={props.productPosition} change={changePosition} />}
+                {step === "2" && !props.isTTN && <Form label="Позиция" value={localPosition} items={props.productPosition} change={changePosition} />}
+                {step === "3" && props.isTTN && <Form label="Позиция" value={localPosition} items={props.productPosition} change={changePosition} />}
                 {step === "1" && <Form label="Тип накладной" value={entityType} items={props.tnOrTtn} change={changeTnOrTtn} />}
                 {step === "1" && <Form label="Вид шаблона" value={templateView} items={props.templateView} change={changeTemplateView} />}
                 {listItems}
-                {step === "2"
+                {step === "2" && !props.isTTN
+                    &&
+                    <Box sx={{ mb: 4, mt: 4, display: 'flex', justifyContent: 'space-between' }}>
+                        <Button onClick={props.addCommodityDictionary} disabled={!props.isShowAddCommodityDictionary} color="secondary" variant="contained">Добавить</Button>
+                        <Button onClick={props.deleteCommodityDictionary} disabled={!props.isShowAddCommodityDictionary} color="secondary" variant="contained">Удалить</Button>
+                    </Box>
+                }
+                {step === "3" && props.isTTN
                     &&
                     <Box sx={{ mb: 4, mt: 4, display: 'flex', justifyContent: 'space-between' }}>
                         <Button onClick={props.addCommodityDictionary} disabled={!props.isShowAddCommodityDictionary} color="secondary" variant="contained">Добавить</Button>

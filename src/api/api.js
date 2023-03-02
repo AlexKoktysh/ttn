@@ -2,7 +2,7 @@ import axios from "axios";
 const token = "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTAyOTIxMjEsIkFwcGxpY2F0aW9uIjoiUnVrb3ZvZGl0ZWwifQ.tdUIEg-hrhP2dRQHL1r6x3raC2GZ8qu0utwrTC8zUBk";
 
 const instance = axios.create({
-    baseURL: `https://portal.liloo.by/api/services/`,
+    baseURL: `https://portal.liloo.by/api/services/ttn/`,
     headers: {
         Authorization : `Bearer ${token}`,
         "Access-Control-Allow-Origin": "https://portal.liloo.by/api/",
@@ -17,7 +17,7 @@ const checkError = (error) => {
 };
 
 export const getDataForCreateTtn = async () => {
-    const response = await instance.post("get_data_for_create_ttn");
+    const response = await instance.post("get_data_for_create");
     return response.data;
 };
 

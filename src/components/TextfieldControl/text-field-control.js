@@ -29,8 +29,8 @@ function TextFieldControl(props) {
                 return props.addProduct(props.item, value);
             case "Транспорт":
                 return props.addCar(props.item, value);
-            case "Номер договора":
-                return props.addDogovor(props.item, value);
+            case "Основания отгрузки":
+                return props.saveShipment(props.item, value);
             default:
                 return;
         }
