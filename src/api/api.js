@@ -44,7 +44,7 @@ export const showSection = async (section) => {
 
 export const deleteSection = async (section) => {
     const response = await instance.post("remove_position", { "position": section });
-    return response.status === 200;
+    return { status: response.status === 200, "message": response.data["ajax-response"] };
 };
 
 export const updateCommodityDictionary = async (params) => {

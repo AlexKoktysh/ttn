@@ -26,7 +26,7 @@ export const changeAvailableTransport_result_custom = (element, availableTranspo
     const field_name = availableTransport[0].controlValue[availableTransport[0].value];
     switch (element.fieldName) {
         case "car_model":
-            return { fieldName: element.fieldName, value: field_name?.car_model };
+            return { fieldName: element.fieldName, value: field_name?.car_model || availableTransport[1].value };
         case "car_number":
             return { fieldName: element.fieldName, value: field_name?.car_number };
         default:
@@ -55,15 +55,11 @@ export const changeCommodity = (response, fieldName, parenValue, commodityDictio
         }
         return item ? `${item}` : "";
     } else {
-        return setSaveCommodity(commodityDictionary)
+        return "";
     }
 };
-const setSaveCommodity = (items) => {
-    const obj = items?.map((element) => element);
-    return obj;
-};
 
-export const changeTransport = (response, fieldName, parenValue) => {
+export const changeTransport = (response, fieldName, parenValue, availableTransport) => {
     if (fieldName === "car_number") {
         const model = response.availableTransport[parenValue]?.car_model;
         const number = response.availableTransport[parenValue]?.car_number;
@@ -75,5 +71,9 @@ export const changeTransport = (response, fieldName, parenValue) => {
         const second_name = response.availableTransport[parenValue]?.second_name;
         return last_name || name || second_name ? `${last_name} ${name} ${second_name}` : "";
     }
-    return `${response.availableTransport[parenValue][fieldName] || ""}`;
-};
+    if (response.availableTransport[parenValue]) {
+        return `${response.availableTransport[parenValue][fieldName] || ""}`;
+    }
+    addNewCar(fieldName, parenValue, availableTransport);
+}
+const addNewCar = (fieldName, parenValue, availableTransport) => {};

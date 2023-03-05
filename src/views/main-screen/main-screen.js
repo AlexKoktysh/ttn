@@ -48,6 +48,8 @@ function MainScreen() {
     const [isTTN, setIsTTN] = useState(false);
     const [currency, setCurrency] = useState(null);
     const [shipment_grounds, setShipment_grounds] = useState(null);
+    const [sample_id, setSample_id] = useState(0);
+    const [transportOwner, setTransportOwner] = useState([]);
     useEffect(() => {
         const fetch = async () => {
             const response = await getDataForCreateTtn();
@@ -81,8 +83,9 @@ function MainScreen() {
             const response = await showSection(productPosition_active);
             const resArray = [...productPosition];
             if (response?.data?.sectionCount >= 1 && response.data.sectionCount + 1 > productPosition.length) {
-                for (let i = 1; i < response.data.sectionCount + 1; i++) {
-                    resArray.push({ index: i, value: i + 1, label: i + 1 })
+                for (let i = 1; i < response.data.sectionCount; i++) {
+                    const find = resArray.find((el) => el.index === i);
+                    !find && resArray.push({ index: i, value: i + 1, label: i + 1 })
                 }
                 setProductPosition(resArray);
             }
@@ -145,7 +148,14 @@ function MainScreen() {
         }));
     };
     const getNewCurrencies = async (value) => {
+        const x = commodityDictionary.map((el) => {
+            if (el.fieldName === "product_name") {
+                return {...el, value};
+            }
+            return el;
+        });
         fetchCommodity(value);
+        setCommodityDictionary(x);
     };
     const addProduct = async (item, value) => {
         const server_product = Object.values(item.controlValue);
@@ -225,7 +235,7 @@ function MainScreen() {
         if (!response?.availableTransport) {
             return;
         }
-        return changeTransport(response, fieldName, parenValue);
+        return changeTransport(response, fieldName, parenValue, availableTransport);
     };
     const expensiveCalculation = (items, changeFunction, setFunction, val) => {
         const controlsInput = items[val].controlInput;
@@ -252,12 +262,12 @@ function MainScreen() {
 
     useMemo(() => {
         if (commodityDictionary[4].value && commodityDictionary[6]?.value) {
-            const sum = commodityDictionary[4].value + commodityDictionary[6].value;
+            const sum = Number(commodityDictionary[4].value) + Number(commodityDictionary[6].value);
             const resObj = commodityDictionary?.map((element) => {
                 if (element.fieldName === "product_cost_with_vat") {
                     return {
                         ...element,
-                        value: sum,
+                        value: sum.toFixed(2),
                     };
                 }
                 return element;
@@ -267,12 +277,12 @@ function MainScreen() {
     }, [commodityDictionary[4]?.value, commodityDictionary[6]?.value]);
     useMemo(() => {
         if (commodityDictionary[4].value && commodityDictionary[5]?.value) {
-            const sum = commodityDictionary[4].value * (commodityDictionary[5].value / 100);
+            const sum = Number(commodityDictionary[4].value) * (Number(commodityDictionary[5].value) / 100);
             const resObj = commodityDictionary?.map((element) => {
                 if (element.fieldName === "ttn_product_vat_sum") {
                     return {
                         ...element,
-                        value: sum,
+                        value: sum.toFixed(2),
                     };
                 }
                 return element;
@@ -282,12 +292,12 @@ function MainScreen() {
     }, [commodityDictionary[4]?.value, commodityDictionary[5]?.value]);
     useMemo(() => {
         if (commodityDictionary[2].value && commodityDictionary[3].value) {
-            const sum = commodityDictionary[2].value * commodityDictionary[3].value;
+            const sum = Number(commodityDictionary[2].value) * Number(commodityDictionary[3].value);
             const resObj = commodityDictionary?.map((element) => {
                 if (element.fieldName === "product_cost") {
                     return {
                         ...element,
-                        value: sum,
+                        value: sum.toFixed(2),
                     };
                 }
                 return element;
@@ -319,6 +329,10 @@ function MainScreen() {
             setCommodityDictionary_result(res);
             return;
         }
+        const data = commodityDictionary_result.map((el) => {
+            return {...el, value: ""};
+        });
+        setCommodityDictionary_result(data);
         setIsShowAddCommodityDictionary(false);
     }, [commodityDictionary, step]);
     useEffect(() => {
@@ -330,6 +344,8 @@ function MainScreen() {
             const commodityDictionary_server = changeLabel(commodityDictionary, response.defaultCurrencyCode);
             setCommodityDictionary(commodityDictionary_server);
         }
+        const transportOwner_server = response?.transportOwner;
+        transportOwner_server && setTransportOwner(transportOwner_server);
     }, [response]);
     useMemo(() => {
         const currencyCode = response?.dogovorDictionary?.find((el) => el.doc_number === shipment_grounds?.doc_number)?.currency;
@@ -364,7 +380,6 @@ function MainScreen() {
             const commodityDictionary_server = commodityDictionary.filter((el) => {
                 return el.fieldName !== "product_vat" &&  el.fieldName !== "product_vat_sum" && el.fieldName !== "product_cost_with_vat"
             });
-            debugger;
             setCommodityDictionary(commodityDictionary_server);
         }
     }, [step]);
@@ -374,11 +389,16 @@ function MainScreen() {
         const ttn_show = isTTN ? !isAll_availableTransport.length : true;
         const checkTnOrTtn = tnOrTtn.find((el) => el.checked);
         const isTemplateView = templateView.find((el) => el.checked);
+        const isAll_commodityDictionary_result = commodityDictionary.filter((el) => el.value === "" && el.require);
+        const isTransportOwner = transportOwner.find((el) => el.checked);
+        const isShowOwner = isTTN ? isTransportOwner : true;
         if (
             !isAll_contrAgents.length &&
             ttn_show &&
             checkTnOrTtn &&
-            isTemplateView
+            isTemplateView &&
+            !isAll_commodityDictionary_result.length &&
+            isShowOwner
             ) {
                 const templateView_result = {fieldName: "invoiceOrientationKinds_id", value: Number(templateView.find((el) => el.checked)?.value)};
 
@@ -390,11 +410,18 @@ function MainScreen() {
                     ? availableTransport?.map((element) => changeAvailableTransport_result_custom(element, availableTransport))
                     : [];
 
+                const sample_id_obj = {fieldName: "sample_id", value: sample_id};
+
+                const transport_owner_id = {fieldName: "transport_owner_id", value: isTransportOwner.value || ""};
+
                 const res = [
                     ...contrAgents_result,
                     ...availableTransport_result,
                     tnOrTtn_result,
                     templateView_result,
+                    ...commodityDictionary_result,
+                    sample_id_obj,
+                    transport_owner_id,
                 ];
                 setServerResult(res);
                 setIsShowSample(true);
@@ -408,6 +435,8 @@ function MainScreen() {
         isTTN,
         tnOrTtn,
         templateView,
+        commodityDictionary_result,
+        transportOwner,
     ]);
     const changeTnOrTtn = (val) => {
         const changeItem = tnOrTtn?.map((el) => {
@@ -429,6 +458,16 @@ function MainScreen() {
         });
         setTemplateView(changeItem);
     };
+    const changeTransportOwner = (val) => {
+        const changeItem = transportOwner?.map((el) => {
+            if (el.value === Number(val)) {
+                return {...el, checked: true};
+            } else {
+                return {...el, checked: false};
+            }
+        });
+        setTransportOwner(changeItem);
+    }
     const clickSample = async () => {
         await sendTemplate(serverResult);
     };
@@ -453,11 +492,11 @@ function MainScreen() {
     };
     const deleteCommodityDictionary = async () => {
         const res = await deleteSection(productPosition_active);
-        if (res) {
+        if (res.status && res.message !== "Удаление позиции для ттн не требуется") {
             setProductPosition_active(productPosition_active);
             const response = await showSection(productPosition_active);
             const resArray = [];
-            for (let i = 0; i < response.data.sectionCount + 1; i++) {
+            for (let i = 0; i < response.data.sectionCount; i++) {
                 resArray.push({ index: i, value: i + 1, label: i + 1 })
             }
             if (response?.status === 200) {
@@ -468,6 +507,23 @@ function MainScreen() {
                 setCommodityDictionary(newCommodityDictionary);
             }
             setProductPosition(resArray);
+        } else {
+            if (res.message === "Удаление позиции для ттн не требуется") {
+                setProductPosition_active(productPosition_active - 1);
+                const response = await showSection(productPosition_active - 1);
+                const resArray = [];
+                for (let i = 0; i < response.data.sectionCount; i++) {
+                    resArray.push({ index: i, value: i + 1, label: i + 1 })
+                }
+                if (response?.status === 200) {
+                    const newCommodityDictionary = commodityDictionary?.map((element) => {
+                        const value = response.data.columns[element.fieldName];
+                        return {...element, value: value ? value : ""};
+                    });
+                    setCommodityDictionary(newCommodityDictionary);
+                }
+                setProductPosition(resArray);
+            }
         }
     };
     const changeProductPosition_active = (value) => {
@@ -501,6 +557,8 @@ function MainScreen() {
                 commodityDictionary={commodityDictionary}
                 saveShipment={saveShipment}
                 isTTN={isTTN}
+                transportOwner={transportOwner}
+                changeTransportOwner={changeTransportOwner}
             />
         </div>
     );
