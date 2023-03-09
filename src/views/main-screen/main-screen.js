@@ -390,7 +390,7 @@ function MainScreen() {
         const checkTnOrTtn = tnOrTtn.find((el) => el.checked);
         const isTemplateView = templateView.find((el) => el.checked);
         const isAll_commodityDictionary_result = commodityDictionary.filter((el) => el.value === "" && el.require);
-        const isTransportOwner = transportOwner.find((el) => el.checked);
+        const isTransportOwner = transportOwner.find((el) => el.checked) || "";
         const isShowOwner = isTTN ? isTransportOwner : true;
         if (
             !isAll_contrAgents.length &&
