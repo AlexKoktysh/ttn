@@ -10,37 +10,137 @@ export const contrAgents_default = [
         require: true,
         fieldName: "shipment_grounds",
     },
-    {
-        index: "2",
-        value: "",
-        label: "Отгрузку разрешил",
-        select: true,
-        currencies: [],
-        require: true,
-        fieldName: "allowed_person_id"
-    },
-    { 
-        index: "3",
-        value: "",
-        label: "Груз сдал",
-        select: true,
-        currencies: [],
-        require: true,
-        fieldName: "handed_person_id"
-    },
-    { 
-        index: "4",
-        value: "",
-        label: "Товар к доставке принял",
-        select: true,
-        currencies: [],
-        controlInput: ["rights_number", "FIO"],
-        controlValue: "",
-        require: true,
-        fieldName: "received_person_id"
-    },
-    { index: "5", value: "", label: "Доверенность", require: true, fieldName: "rights_number"},
-    { index: "6", value: "", label: "ФИО", require: true, fieldName: "FIO" },
+    { index: "2", header: "Отгрузку разрешил", require: false },
+    { index: "3", block: true, fieldName: "allowed_person", items: [
+        {
+            index: "4",
+            value: "",
+            label: "Фамилия",
+            class: true,
+            select: true,
+            controlInput: ["allowed_person_name", "allowed_person_second_name", "allowed_person_org_position"],
+            autocomplete: true,
+            currencies: [],
+            require: true,
+            key: "last_name",
+            fieldName: "allowed_person_last_name"
+        },
+        {
+            index: "5",
+            value: "",
+            label: "Имя",
+            class: true,
+            require: true,
+            key: "name",
+            fieldName: "allowed_person_name"
+        },
+        {
+            index: "6",
+            value: "",
+            label: "Отчество",
+            class: true,
+            require: true,
+            key: "second_name",
+            fieldName: "allowed_person_second_name"
+        },
+        {
+            index: "7",
+            value: "",
+            label: "Должность",
+            class: true,
+            require: true,
+            key: "org_position",
+            fieldName: "allowed_person_org_position"
+        },
+    ]},
+    { index: "8", header: "Груз сдал", require: false },
+    { index: "9", block: true, fieldName: "handed_person", items: [
+        {
+            index: "10",
+            value: "",
+            label: "Фамилия",
+            class: true,
+            select: true,
+            controlInput: ["handed_person_name", "handed_person_second_name", "handed_person_org_position"],
+            autocomplete: true,
+            currencies: [],
+            require: true,
+            key: "last_name",
+            fieldName: "handed_person_last_name"
+        },
+        {
+            index: "11",
+            value: "",
+            label: "Имя",
+            class: true,
+            require: true,
+            key: "name",
+            fieldName: "handed_person_name"
+        },
+        {
+            index: "12",
+            value: "",
+            label: "Отчество",
+            class: true,
+            require: true,
+            key: "second_name",
+            fieldName: "handed_person_second_name"
+        },
+        {
+            index: "13",
+            value: "",
+            label: "Должность",
+            class: true,
+            require: true,
+            key: "org_position",
+            fieldName: "handed_person_org_position"
+        },
+    ] },
+    { index: "14", header: "Товар к доставке принял", require: false },
+    { index: "15", block: true, fieldName: "received_person", items: [
+        { 
+            index: "16",
+            value: "",
+            label: "Фамилия",
+            class: true,
+            select: true,
+            autocomplete: true,
+            currencies: [],
+            controlInput: ["rights_number", "received_person_name", "received_person_second_name", "received_person_org_position"],
+            controlValue: "",
+            require: true,
+            key: "last_name",
+            fieldName: "received_person_last_name"
+        },
+        { 
+            index: "17",
+            value: "",
+            label: "Имя",
+            class: true,
+            require: true,
+            key: "name",
+            fieldName: "received_person_name"
+        },
+        { 
+            index: "18",
+            value: "",
+            label: "Отчество",
+            class: true,
+            require: true,
+            key: "second_name",
+            fieldName: "received_person_second_name"
+        },
+        {
+            index: "19",
+            value: "",
+            label: "Должность",
+            class: true,
+            require: true,
+            key: "org_position",
+            fieldName: "received_person_org_position"
+        },
+    ]},
+    { index: "20", value: "", label: "Доверенность", require: true, fieldName: "rights_number"},
 ];
 export const commodityDictionary_default = [
     {

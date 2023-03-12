@@ -168,84 +168,6 @@ function MainScreen(props) {
         fetchCommodity(value);
         setCommodityDictionary(data);
     };
-    const addProduct = async (item, value) => {
-        const server_product = Object.values(item.controlValue);
-        const product = server_product?.find((el) => el === value);
-        if (product) {
-            const res = commodityDictionary?.map((el) => {
-                if (el.fieldName === item.fieldName) {
-                    return {...el, value: product};
-                } else {
-                    return el;
-                }
-            });
-            setCommodityDictionary(res);
-        }
-    };
-    const saveShipment = (item, value) => {
-        const check = type.find((el) => el.checked)?.label;
-        switch(check) {
-            case "Договор":
-                return saveShipment_dogovor(item, value);
-            case "Счет":
-                return saveShipment_invoice(item, value);
-            default:
-                return;
-        }
-    };
-    const saveShipment_invoice = (item, value) => {
-        const invoice = value.split("от")[0].trim();
-        const shipment = invoice_response?.invoiceDictionary.find((el) => el.doc_number === invoice);
-        shipment && setShipment_grounds(shipment);
-        if (invoice) {
-            const res = contrAgents?.map((el) => {
-                if (el.fieldName === item.fieldName) {
-                    return {...el, value};
-                } else {
-                    return el;
-                }
-            });
-            return setContrAgents(res);
-        }
-    };
-    const saveShipment_dogovor = (item, value) => {
-        const dogovor = value.split("от")[0].trim();
-        const shipment = response?.dogovorDictionary.find((el) => el.doc_number === dogovor);
-        shipment && setShipment_grounds(shipment);
-        if (dogovor) {
-            const res = contrAgents?.map((el) => {
-                if (el.fieldName === item.fieldName) {
-                    return {...el, value};
-                } else {
-                    return el;
-                }
-            });
-            return setContrAgents(res);
-        }
-    };
-    const addCar = (item, value) => {
-        const car = item.currencies.find((el) => el.index === value);
-        if (car) {
-            const res = availableTransport?.map((el) => {
-                if (el.fieldName === item.fieldName) {
-                    return {...el, value: car.index};
-                } else {
-                    return el;
-                }
-            });
-            return setAvailableTransport(res);
-        }
-        const ind = item.currencies.length;
-        const pushItem = {index: ind, label: value};
-        const res = availableTransport?.map((el) => {
-            if (el.fieldName === item.fieldName) {
-                return {...el, value: ind, currencies: [...el.currencies, pushItem]};
-            } else {
-                return el;
-            }
-        });
-        setAvailableTransport(res);
-    };
     const changeCommodityDictionary = (fieldName, parenValue) => {
         if (!Object.values(server_commodityDictionary).length) {
             return;
@@ -255,15 +177,13 @@ function MainScreen(props) {
     const changeContrAgents = (fieldName, parenValue) => {
         switch (fieldName) {
             case "rights_number":
-                const number = response.ttnPersons[parenValue]?.rights_number;
-                const date = response.ttnPersons[parenValue]?.rights_date;
+                const element = response.ttnPersons?.find((el) => el.last_name === parenValue);
+                const number = element?.rights_number;
+                const date = element?.rights_date;
                 const showTextDate = `от ${date}`
                 return number || date ? `${number} ${showTextDate}` : "";
-            case "FIO":
-                const last_name = response.ttnPersons[parenValue]?.last_name;
-                const name = response.ttnPersons[parenValue]?.name;
-                const second_name = response.ttnPersons[parenValue]?.second_name;
-                return last_name || name || second_name ? `${last_name} ${name} ${second_name}` : "";
+            case "received_person_name":
+                debugger;
             default:
                 return "";
         }
@@ -276,7 +196,7 @@ function MainScreen(props) {
     };
     const expensiveCalculation = (items, changeFunction, setFunction, val) => {
         const controlsInput = items[val].controlInput;
-        const parent = items.find((el) => el.select && (el.fieldName !== "allowed_person_id" && el.fieldName !== "handed_person_id" && el.fieldName !== "shipment_grounds"));
+        const parent = items.find((el) => el.select);
         if (parent.value !== "") {
             const controlItems = items.filter((el) => controlsInput.find((element) => el.fieldName === element));
             const changeItems = controlItems?.map((el) => {
@@ -293,8 +213,38 @@ function MainScreen(props) {
             setFunction(resultObj);
         }
     };
+    const expensivePerson = (items, changeFunction, setFunction, val) => {
+        const controlsInput = items[val].items[0].controlInput;
+        const parent = items[val]?.items[0];
+        if (parent.value !== "") {
+            const controlItems = items.filter((el) => controlsInput.find((element) => el.fieldName === element));
+            const changeItems = controlItems?.map((el) => {
+                return {
+                    ...el,
+                    value: changeFunction(el.fieldName, parent.value),
+                };
+            });
+            const controlObj = items[val].items[0].controlInput;
+            const changeObj = controlObj.slice(1)?.map((el) => {
+                const item = items[val].items.find((element) => element.fieldName === el);
+                if (item) {
+                    const val = parent.controlValue.find((i) => i.last_name === parent.value);
+                    return {...item, value: val[item.key]};
+                } else {
+                    return el;
+                }
+            });
+            debugger;
+            const resultObj = items?.map((el) => {
+                const found = changeItems.find((element) => element.index === el.index);
+                if (found) return found;
+                return el;
+            });
+            setFunction(resultObj);
+        }
+    };
     useMemo(() => expensiveCalculation(availableTransport, changeAvailableTransport, setAvailableTransport, 0), [availableTransport[0].value]);
-    useMemo(() => expensiveCalculation(contrAgents, changeContrAgents, setContrAgents, 4), [contrAgents[4].value]);
+    useMemo(() => expensivePerson(contrAgents, changeContrAgents, setContrAgents, 7), [contrAgents[7].items[0].value]);
     useMemo(() => expensiveCalculation(commodityDictionary, changeCommodityDictionary, setCommodityDictionary, 0), [commodityDictionary[0].value]);
 
     useMemo(() => {
@@ -600,6 +550,105 @@ function MainScreen(props) {
         setSample_id(props.sample_id);
     }, [props.sample_id]);
 
+    const addProduct = async (item, value) => {
+        const server_product = Object.values(item.controlValue);
+        const product = server_product?.find((el) => el === value);
+        if (product) {
+            const res = commodityDictionary?.map((el) => {
+                if (el.fieldName === item.fieldName) {
+                    return {...el, value: product};
+                } else {
+                    return el;
+                }
+            });
+            setCommodityDictionary(res);
+        }
+    };
+    const addCar = (item, value) => {
+        const car = item.currencies.find((el) => el.index === value);
+        if (car) {
+            const res = availableTransport?.map((el) => {
+                if (el.fieldName === item.fieldName) {
+                    return {...el, value: car.index};
+                } else {
+                    return el;
+                }
+            });
+            return setAvailableTransport(res);
+        }
+        const ind = item.currencies.length;
+        const pushItem = {index: ind, label: value};
+        const res = availableTransport?.map((el) => {
+            if (el.fieldName === item.fieldName) {
+                return {...el, value: ind, currencies: [...el.currencies, pushItem]};
+            } else {
+                return el;
+            }
+        });
+        setAvailableTransport(res);
+    };
+    const saveShipment = (item, value) => {
+        const check = type.find((el) => el.checked)?.label;
+        switch(check) {
+            case "Договор":
+                return saveShipment_dogovor(item, value);
+            case "Счет":
+                return saveShipment_invoice(item, value);
+            default:
+                return;
+        }
+    };
+    const saveShipment_invoice = (item, value) => {
+        const invoice = value.split("от")[0].trim();
+        const shipment = invoice_response?.invoiceDictionary.find((el) => el.doc_number === invoice);
+        shipment && setShipment_grounds(shipment);
+        if (invoice) {
+            const res = contrAgents?.map((el) => {
+                if (el.fieldName === item.fieldName) {
+                    return {...el, value};
+                } else {
+                    return el;
+                }
+            });
+            return setContrAgents(res);
+        }
+    };
+    const saveShipment_dogovor = (item, value) => {
+        const dogovor = value.split("от")[0].trim();
+        const shipment = response?.dogovorDictionary.find((el) => el.doc_number === dogovor);
+        shipment && setShipment_grounds(shipment);
+        if (dogovor) {
+            const res = contrAgents?.map((el) => {
+                if (el.fieldName === item.fieldName) {
+                    return {...el, value};
+                } else {
+                    return el;
+                }
+            });
+            return setContrAgents(res);
+        }
+    };
+    const savePerson = (item, value) => {
+        const person = item.currencies.find((el) => el.label === value);
+        if (person) {
+            const res = contrAgents?.map((el) => {
+                if (el.fieldName === "received_person") {
+                    const items = el.items.map((element) => {
+                        if (element.fieldName === item.fieldName) {
+                            return {...element, value};
+                        } else {
+                            return element;
+                        }
+                    });
+                    return {...el, items};
+                } else {
+                    return el;
+                }
+            });
+            setContrAgents(res);
+        }
+    };
+
     return (
         <div id="main-screen">
             {server_response &&
@@ -638,6 +687,7 @@ function MainScreen(props) {
                     changeTransportOwner={changeTransportOwner}
                     showAddButton={props.showAddButton}
                     loader={loader}
+                    savePerson={savePerson}
                 />
             }
         </div>

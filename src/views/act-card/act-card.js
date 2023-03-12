@@ -45,33 +45,61 @@ function ActCard(props) {
     const change = (changeItem, value) => {
         props.updatedItems(changeItem, value);
     };
-    const addCar = (item, value) => {
-        props.addCar(item, value);
-    };
-    const addProduct = (item, value) => {
-        props.addProduct(item, value);
-    };
-    const saveShipment = (item, value) => {
-        props.saveShipment(item, value);
-    };
     const changeDate = (label, value) => {
         props.changeDate(label, value);
     };
-    const listItems = props.items?.map((item) =>
-        !item.header
-            ? <TextFieldControl
-                commodityDictionary={props.commodityDictionary}
-                item={item}
-                key={item.index}
-                change={change}
-                addCar={addCar}
-                addProduct={addProduct}
-                saveShipment={saveShipment}
-                changeDate={changeDate}
-                getNewCurrencies={props.getNewCurrencies}
-                loader={props.loader}
-            />
-            : <div key={item.index} className="header">{item.header}</div>
+    const saveField = (item, value) => {
+        switch(item.fieldName) {
+            case "product_name":
+                return props.addProduct(item, value);
+            case "car_model":
+                return props.addCar(item, value);
+            case "shipment_grounds":
+                return props.saveShipment(item, value);
+            case "received_person_last_name":
+                return props.savePerson(item, value);
+            default:
+                return;
+        }
+    };
+    const listItems = props.items?.map((item) => {
+        if (item.header) {
+            return <div key={item.index} className="header">{item.header}</div>
+        }
+        if (!item.header && !item.block) {
+            return <TextFieldControl
+                        commodityDictionary={props.commodityDictionary}
+                        item={item}
+                        key={item.index}
+                        saveField={saveField}
+                        change={change}
+                        changeDate={changeDate}
+                        getNewCurrencies={props.getNewCurrencies}
+                        loader={props.loader}
+                    />
+        }
+        if (!item.header && item.block) {
+            return (
+                <div className="block" key={item.index}>
+                    {
+                        item.items.map((element) => {
+                            return (
+                                <TextFieldControl
+                                    item={element}
+                                    key={element.index}
+                                    saveField={saveField}
+                                    change={change}
+                                    changeDate={changeDate}
+                                    getNewCurrencies={props.getNewCurrencies}
+                                    loader={props.loader}
+                                />
+                            );
+                        })
+                    }
+                </div>
+            );
+        }
+    }
     );
 
     return (

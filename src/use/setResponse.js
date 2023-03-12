@@ -43,12 +43,12 @@ const setResponse_custom = (element, response, allResponse) => {
     switch (element_name) {
         case "shipment_grounds":
             return getDogovorCurrencies(element, allResponse);
-            case "allowed_person_id":
-                return getCurrencies(element, response, false, "last_name");
-            case "handed_person_id":
-                return getCurrencies(element, response, false, "last_name");
-            case "received_person_id":
-                return getCurrencies(element, response, true, "last_name", response);
+        case "allowed_person":
+            return getCurrenciesPerson(element, response, false);
+        case "handed_person":
+            return getCurrenciesPerson(element, response, false);
+        case "received_person":
+            return getCurrenciesPerson(element, response, true);
         case "car_model":
             return getCurrenciesCar(element, response, true, "car_model car_number", response);
         case "product_name":
@@ -67,6 +67,22 @@ const getDogovorCurrencies = (element, response) => {
         };
     }
     return element;
+};
+const getCurrenciesPerson = (element, response, isControl) => {
+    const isArray = Array.isArray(response);
+    const mapEntity = response && !isArray ? Object.values(response) : response || [];
+    return {
+        ...element,
+        items: element.items.map((el_item) => {
+            return {
+                ...el_item,
+                currencies: mapEntity?.map((el, index) => {
+                    return { index: index, label: `${el[el_item.key]}`};
+                }) || [],
+                controlValue: isControl ? response : "",
+            }
+        }),
+    };
 };
 const getCurrencies = (element, response, isControl, label, control_response) => {
     const isArray = Array.isArray(response);

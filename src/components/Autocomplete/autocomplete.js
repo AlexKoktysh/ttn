@@ -6,19 +6,12 @@ import match from 'autosuggest-highlight/match';
 
 function AutocompleteField(props) {
     const [label, setLabel] = useState("");
-    const save = (event) => {
+    const saveField = (event) => {
         const val = props.item.fieldName === "car_model" ? event.target.value : event.currentTarget.innerText;
-        props.saveCar(val)
+        props.saveField(val)
     };
-    const newCar = (event) => {
-        switch(props.item.fieldName) {
-            case "car_model":
-                return props.saveCar(event.target.value);
-            case "product_name":
-                return props.getNewCurrencies(event.target.value);
-            default:
-                break;
-        }
+    const setNewItem = (event) => {
+        return props.saveField(event.target.value);
     };
     useEffect(() => {
         switch (props.item.fieldName) {
@@ -54,10 +47,10 @@ function AutocompleteField(props) {
             loading={props.loader}
             value={label}
             loadingText={"Загрузка"}
-            onChange={save}
+            onChange={saveField}
             options={props.item.currencies?.map((option) => option)}
             renderInput={(params) => {
-                return <TextField {...params} label={props.item.label} onChange={newCar} />
+                return <TextField {...params} label={props.item.label} onChange={setNewItem} />
             }}
             renderOption={(props, option, { inputValue }) => {
                 const matches = match(option.label, inputValue, { insideWords: true });

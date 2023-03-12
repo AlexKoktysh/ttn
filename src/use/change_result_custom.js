@@ -10,11 +10,6 @@ export const changeContrAgentsResult_custom = (element) => {
             const resObj_dov = {fieldName: "rights_number", value: res_label[0]};
             const resObj_date = {fieldName: "rights_date", value: res_label[2]};
             return {...resObj_dov, ...resObj_date};
-        case "FIO":
-            const last_name = {fieldName: "rights_last_name", value: res_label[0]};
-            const name = {fieldName: "rights_name", value: res_label[1]};
-            const second_name = {fieldName: "rights_second_name", value: res_label[2]};
-            return {...last_name, ...name, ...second_name};
         case "shipping_date":
             const date = moment(element.value, "YYYY-MM-DD").format("DD.MM.YYYY")
             return { fieldName: element.fieldName, value: date };

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { FormControl, TextField, MenuItem } from "@mui/material";
+import { FormControl, TextField } from "@mui/material";
 import DatePickerControl from "../../components/DatePicker/date-picker.js";
 import "./text-field-control.scss";
 import Autocomplete from "../Autocomplete/autocomplete.js";
+import Box from '@mui/material/Box';
 
 function TextFieldControl(props) {
-    const [value, setValue] = useState(props.item.value);
+    const [value, setValue] = useState(props?.item?.value || "");
 
     const changeInput = (event) => {
         let val = event.target.value;
@@ -20,54 +21,37 @@ function TextFieldControl(props) {
         setValue(value);
         props.changeDate(label, value);
     };
-    useEffect(() => {
-        setValue(props.item.value);
-    }, [props.item.value]);
-    const saveCar = (value) => {
-        switch(props.item.label) {
-            case "Наименование товара":
-                return props.addProduct(props.item, value);
-            case "Транспорт":
-                return props.addCar(props.item, value);
-            case "Основания отгрузки":
-                return props.saveShipment(props.item, value);
-            default:
-                return;
-        }
+    const saveField = (value) => {
+        props.saveField(props.item, value)
     };
+    useEffect(() => {
+        setValue(props?.item?.value || "");
+    }, [props?.item?.value]);
 
     return (
         <FormControl className="field">
-            {!props.item.date
-                ?
-                (
-                    !props.item.autocomplete
-                        ? (
-                            <TextField
-                                label={props.item.label}
-                                select={props.item.select}
-                                key={props.item.index}
-                                size="small"
-                                onChange={changeInput}
-                                value={value}
-                                disabled={props.item.disabled}
-                            >
-                                {props.item.select && props.item.currencies.map((option) => (
-                                    <MenuItem key={option.index} value={option.index}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        )
-                        : (<Autocomplete
-                            item={props.item}
-                            key={props.item.index}
-                            saveCar={saveCar}
-                            getNewCurrencies={props.getNewCurrencies}
-                            loader={props.loader}
-                        />)
-                )
-                : <DatePickerControl item={props.item} change={changeDate} />
+            {props?.item && props.item.date && <DatePickerControl item={props.item} change={changeDate} />}
+            {props.item.block && <div className="block"></div>}
+            {props?.item && props.item.autocomplete &&
+                <Box sx={{ mr: props.item.class ? 1 : 0}}>
+                    <Autocomplete
+                        item={props.item}
+                        key={props.item.index}
+                        saveField={saveField}
+                        loader={props.loader}
+                    />
+                </Box>
+            }
+            {props?.item && !props.item.date && !props.item.autocomplete &&
+                <TextField
+                    label={props.item.label}
+                    select={props.item.select}
+                    key={props.item.index}
+                    size="small"
+                    onChange={changeInput}
+                    value={value}
+                    disabled={props.item.disabled}
+                ></TextField>
             }
         </FormControl>
     );
