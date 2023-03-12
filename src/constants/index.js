@@ -76,6 +76,10 @@ export const templateViewField = [
     { index: "0", value: "1", label: "Вертикально", checked: false },
     { index: "1", value: "2", label: "Горизонтально", checked: false },
 ];
+export const typeFields = [
+    { index: "0", value: "1", label: "Счет", checked: false },
+    { index: "1", value: "2", label: "Договор", checked: true },
+];
 export const availableTransport_default = [
     {
         index: "0",

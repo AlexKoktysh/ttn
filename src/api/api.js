@@ -5,10 +5,19 @@ const instance = axios.create({
     baseURL: `https://portal.liloo.by/api/services/ttn/`,
     headers: {
         Authorization : `Bearer ${token}`,
-        "Access-Control-Allow-Origin": "https://portal.liloo.by/api/",
     },
 });
 instance.interceptors.response.use(
+    (response) => response,
+    (error) => checkError(error)
+);
+const instance_commodity = axios.create({
+    baseURL: `https://portal.liloo.by/api/services/`,
+    headers: {
+        Authorization : `Bearer ${token}`,
+    },
+});
+instance_commodity.interceptors.response.use(
     (response) => response,
     (error) => checkError(error)
 );
@@ -53,6 +62,11 @@ export const updateCommodityDictionary = async (params) => {
 };
 
 export const getCommodityDictionary = async (searchText) => {
-    const response = await instance.post("get_commodity_dictionary",  { filter: searchText });
+    const response = await instance_commodity.post("get_commodity_dictionaries",  { filter: searchText });
+    return response.data;
+};
+
+export const getInvoice = async () => {
+    const response = await instance.post("get_available_invoices");
     return response.data;
 };

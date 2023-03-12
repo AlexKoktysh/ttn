@@ -59,7 +59,13 @@ function TextFieldControl(props) {
                                 ))}
                             </TextField>
                         )
-                        : (<Autocomplete item={props.item} key={props.item.index} saveCar={saveCar} getNewCurrencies={props.getNewCurrencies} />)
+                        : (<Autocomplete
+                            item={props.item}
+                            key={props.item.index}
+                            saveCar={saveCar}
+                            getNewCurrencies={props.getNewCurrencies}
+                            loader={props.loader}
+                        />)
                 )
                 : <DatePickerControl item={props.item} change={changeDate} />
             }

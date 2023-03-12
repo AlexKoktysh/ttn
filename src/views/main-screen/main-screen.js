@@ -8,6 +8,7 @@ import {
     deleteSection,
     getCommodityDictionary,
     updateCommodityDictionary,
+    getInvoice,
 } from "../../api/api";
 import {
     contrAgents_default,
@@ -15,6 +16,7 @@ import {
     commodityDictionary_default,
     tnOrTtnField,
     templateViewField,
+    typeFields,
     steps,
 } from "../../constants/index.js";
 import "./main-screen.scss";
@@ -26,8 +28,10 @@ import {
     changeContrAgentsResult_custom,
     changeTransport,
 } from "../../use/change_result_custom.js";
+import { CircularProgress } from "@mui/material";
+import Box from '@mui/material/Box';
 
-function MainScreen() {
+function MainScreen(props) {
     const [serverResult, setServerResult] = useState([]);
     const [response, setResponse] = useState([]);
     const [step, setStep] = useState("");
@@ -37,6 +41,7 @@ function MainScreen() {
     const [commodityDictionary, setCommodityDictionary] = useState(commodityDictionary_default);
     const [tnOrTtn, setTnOrTtn] = useState(tnOrTtnField);
     const [templateView, setTemplateView] = useState(templateViewField);
+    const [type, setType] = useState(typeFields);
     const [resSteps, setResSteps] = useState(steps);
     const [isShowSample, setIsShowSample] = useState(false);
     const [isShowAddCommodityDictionary, setIsShowAddCommodityDictionary] = useState(false);
@@ -48,19 +53,25 @@ function MainScreen() {
     const [isTTN, setIsTTN] = useState(false);
     const [currency, setCurrency] = useState(null);
     const [shipment_grounds, setShipment_grounds] = useState(null);
-    const [sample_id, setSample_id] = useState(0);
     const [transportOwner, setTransportOwner] = useState([]);
+    const [sample_id, setSample_id] = useState(props.sample_id);
+    const [server_response, setServer_response] = useState(false);
+    const [loader, setLoader] = useState(false);
     useEffect(() => {
         const fetch = async () => {
+            setServer_response(true);
             const response = await getDataForCreateTtn();
             setResponse(response);
+            setServer_response(false);
         };
         fetch();
     }, []);
     useEffect(() => {
         const fetchCommodity = async () => {
+            setLoader(true);
             const response = await getCommodityDictionary("");
             setServer_commodityDictionary(response);
+            setLoader(false);
         }
         const update = () => {
             const isAll_commodityDictionary = commodityDictionary.filter((el) => !el.value && el.require);
@@ -148,14 +159,14 @@ function MainScreen() {
         }));
     };
     const getNewCurrencies = async (value) => {
-        const x = commodityDictionary.map((el) => {
+        const data = commodityDictionary.map((el) => {
             if (el.fieldName === "product_name") {
                 return {...el, value};
             }
             return el;
         });
         fetchCommodity(value);
-        setCommodityDictionary(x);
+        setCommodityDictionary(data);
     };
     const addProduct = async (item, value) => {
         const server_product = Object.values(item.controlValue);
@@ -172,6 +183,32 @@ function MainScreen() {
         }
     };
     const saveShipment = (item, value) => {
+        const check = type.find((el) => el.checked)?.label;
+        switch(check) {
+            case "Договор":
+                return saveShipment_dogovor(item, value);
+            case "Счет":
+                return saveShipment_invoice(item, value);
+            default:
+                return;
+        }
+    };
+    const saveShipment_invoice = (item, value) => {
+        const invoice = value.split("от")[0].trim();
+        const shipment = invoice_response?.invoiceDictionary.find((el) => el.doc_number === invoice);
+        shipment && setShipment_grounds(shipment);
+        if (invoice) {
+            const res = contrAgents?.map((el) => {
+                if (el.fieldName === item.fieldName) {
+                    return {...el, value};
+                } else {
+                    return el;
+                }
+            });
+            return setContrAgents(res);
+        }
+    };
+    const saveShipment_dogovor = (item, value) => {
         const dogovor = value.split("от")[0].trim();
         const shipment = response?.dogovorDictionary.find((el) => el.doc_number === dogovor);
         shipment && setShipment_grounds(shipment);
@@ -458,6 +495,28 @@ function MainScreen() {
         });
         setTemplateView(changeItem);
     };
+    const changeType = (val) => {
+        const changeItem = type?.map((el) => {
+            if (el.value === val) {
+                return {...el, checked: true};
+            } else {
+                return {...el, checked: false};
+            }
+        });
+        setType(changeItem);
+        if (changeItem[0].checked) {
+            getInvoice_server();
+        }
+    };
+    const [invoice_response, setInvoice_response] = useState([]);
+    const getInvoice_server = async () => {
+        const res = await getInvoice();
+        if (res) {
+            setInvoice_response(res);
+            const contrAgents_server = setResponseMapper(contrAgents, response?.ttnPersons, res.invoiceDictionary);
+            setContrAgents(contrAgents_server);
+        }
+    };
     const changeTransportOwner = (val) => {
         const changeItem = transportOwner?.map((el) => {
             if (el.value === Number(val)) {
@@ -485,8 +544,15 @@ function MainScreen() {
             const newProductPosition = [
                 ...productPosition,
                 { index: productPosition_active, value: productPosition_active + 1, label: productPosition_active + 1 },
-            ]
-            setProductPosition(newProductPosition);
+            ];
+            const { arr: filtered } = newProductPosition.reduce((acc, elem) => {
+                if (!acc.unique[elem.value]) {
+                   acc.unique[elem.value] = true;
+                   acc.arr.push(elem);
+                }
+                return acc;
+            }, { arr: [], unique: {} });
+            setProductPosition(filtered);
             setProductPosition_active(productPosition_active + 1);
         }
     };
@@ -530,36 +596,50 @@ function MainScreen() {
         setProductPosition_prev(productPosition_active);
         setProductPosition_active(value);
     };
+    useEffect(() => {
+        setSample_id(props.sample_id);
+    }, [props.sample_id]);
 
     return (
         <div id="main-screen">
-            <ActCard
-                changeStep={(step) => setStep(step)}
-                items={activeFormItems}
-                updatedItems={updatedItems}
-                addCar={addCar}
-                addProduct={addProduct}
-                tnOrTtn={tnOrTtn}
-                changeTnOrTtn={changeTnOrTtn}
-                templateView={templateView}
-                changeTemplateView={changeTemplateView}
-                resSteps={resSteps}
-                isShowSample={isShowSample}
-                clickSample={clickSample}
-                changeDate={changeDate}
-                isShowAddCommodityDictionary={isShowAddCommodityDictionary}
-                addCommodityDictionary={addCommodityDictionary}
-                productPosition={productPosition}
-                productPosition_active={productPosition_active}
-                changeProductPosition_active={changeProductPosition_active}
-                deleteCommodityDictionary={deleteCommodityDictionary}
-                getNewCurrencies={getNewCurrencies}
-                commodityDictionary={commodityDictionary}
-                saveShipment={saveShipment}
-                isTTN={isTTN}
-                transportOwner={transportOwner}
-                changeTransportOwner={changeTransportOwner}
-            />
+            {server_response &&
+                <Box sx={{ justifyContent: 'center', width: '50%' }}>
+                    <CircularProgress />
+                </Box>
+            }
+            {!server_response &&
+                <ActCard
+                    changeStep={(step) => setStep(step)}
+                    items={activeFormItems}
+                    updatedItems={updatedItems}
+                    addCar={addCar}
+                    addProduct={addProduct}
+                    tnOrTtn={tnOrTtn}
+                    changeTnOrTtn={changeTnOrTtn}
+                    templateView={templateView}
+                    type={type}
+                    changeType={changeType}
+                    changeTemplateView={changeTemplateView}
+                    resSteps={resSteps}
+                    isShowSample={isShowSample}
+                    clickSample={clickSample}
+                    changeDate={changeDate}
+                    isShowAddCommodityDictionary={isShowAddCommodityDictionary}
+                    addCommodityDictionary={addCommodityDictionary}
+                    productPosition={productPosition}
+                    productPosition_active={productPosition_active}
+                    changeProductPosition_active={changeProductPosition_active}
+                    deleteCommodityDictionary={deleteCommodityDictionary}
+                    getNewCurrencies={getNewCurrencies}
+                    commodityDictionary={commodityDictionary}
+                    saveShipment={saveShipment}
+                    isTTN={isTTN}
+                    transportOwner={transportOwner}
+                    changeTransportOwner={changeTransportOwner}
+                    showAddButton={props.showAddButton}
+                    loader={loader}
+                />
+            }
         </div>
     );
 }

@@ -1,3 +1,5 @@
+import { commodityDictionary_default } from "../constants";
+
 export const setResponseMapper = (items, response, allResponse) => {
     const result = items?.map((element) => setResponse_custom(element, response, allResponse));
     return result;
@@ -7,13 +9,13 @@ export const changeLabel = (items, value) => {
         const element_name = element.fieldName;
         switch (element_name) {
             case "product_price":
-                return {...element, label: `${element.label} ${value}`};
+                return {...element, label: `${commodityDictionary_default[3].label} ${value}`};
             case "product_cost":
-                return {...element, label: `${element.label} ${value}`};
+                return {...element, label: `${commodityDictionary_default[4].label} ${value}`};
             case "ttn_product_vat_sum":
-                return {...element, label: `${element.label} ${value}`};
+                return {...element, label: `${commodityDictionary_default[6].label} ${value}`};
             case "product_cost_with_vat":
-                return {...element, label: `${element.label} ${value}`};
+                return {...element, label: `${commodityDictionary_default[7].label} ${value}`};
             default:
                 return element;
         }
@@ -41,12 +43,12 @@ const setResponse_custom = (element, response, allResponse) => {
     switch (element_name) {
         case "shipment_grounds":
             return getDogovorCurrencies(element, allResponse);
-        case "allowed_person_id":
-            return getCurrencies(element, response, false, "last_name");
-        case "handed_person_id":
-            return getCurrencies(element, response, false, "last_name");
-        case "received_person_id":
-            return getCurrencies(element, response, true, "last_name", response);
+            case "allowed_person_id":
+                return getCurrencies(element, response, false, "last_name");
+            case "handed_person_id":
+                return getCurrencies(element, response, false, "last_name");
+            case "received_person_id":
+                return getCurrencies(element, response, true, "last_name", response);
         case "car_model":
             return getCurrenciesCar(element, response, true, "car_model car_number", response);
         case "product_name":
