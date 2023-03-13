@@ -50,7 +50,9 @@ const setResponse_custom = (element, response, allResponse) => {
         case "received_person":
             return getCurrenciesPerson(element, response, true);
         case "car_model":
-            return getCurrenciesCar(element, response, true, "car_model car_number", response);
+            return getCurrenciesCar(element, response, true, "car_model", response);
+        case "car_number":
+            return getCurrenciesCar(element, response, true, "car_number", response);    
         case "product_name":
             return getCurrencies(element, response?.commodityDictionary, true, "product_name", response?.commodityOptions);
         default:
@@ -110,8 +112,7 @@ const getCurrenciesCar = (element, response, isControl, label, control_response)
     return {
         ...element,
         currencies: response?.map((el, index) => {
-            const lab = label?.split(" ");
-            return { index: index, label: `${el[lab[0]]} ${el[lab[1]]}`};
+            return { index: index, label: el[label] || ""};
         }) || [],
         controlValue: isControl ? control_response : "",
     };

@@ -374,8 +374,44 @@ function MainScreen(props) {
             setContrAgents(res);
         }
     };
+    const expensiveCar = (model, number) => {
+        if (model && !number) {
+            const res = availableTransport.map((el) => {
+                if (el.fieldName === "car_number") {
+                    const filter = response.availableTransport.filter((i) => i.car_model === model);
+                    const currencies = filter?.map((el, index) => {
+                        return { index: index, label: el.car_number};
+                    });
+                    return {...el, currencies};
+                } else {
+                    return el;
+                }
+            });
+            setAvailableTransport(res);
+        }
+        if (number && !model) {
+            const res = availableTransport.map((el) => {
+                if (el.fieldName === "car_model") {
+                    const filter = response.availableTransport.filter((i) => i.car_number === number);
+                    const currencies = filter?.map((el, index) => {
+                        return { index: index, label: el.car_model};
+                    });
+                    return {...el, currencies};
+                } else {
+                    return el;
+                }
+            });
+            setAvailableTransport(res);
+        }
+        if (number && model) {
+            const filterModel = response.availableTransport.filter((i) => i.car_model === model);
+            const filter = filterModel.filter((i) => i.car_number === number);
+            const res = changeTransport(availableTransport, filter);
+            setAvailableTransport(res);
+        }
+    };
 
-    useMemo(() => expensiveCalculation(availableTransport, changeAvailableTransport, setAvailableTransport, 0), [availableTransport[0].value]);
+    useMemo(() => expensiveCar(availableTransport[0].value, availableTransport[1].value), [availableTransport[0].value, availableTransport[1].value]);
     useMemo(() => expensivePerson(contrAgents, changeContrAgents, setContrAgents, 7), [contrAgents[7].items[0].value]);
     useMemo(() => expensivePerson(contrAgents, changeContrAgents, setContrAgents, 3), [contrAgents[3].items[0].value]);
     useMemo(() => expensivePerson(contrAgents, changeContrAgents, setContrAgents, 5), [contrAgents[5].items[0].value]);
@@ -707,11 +743,11 @@ function MainScreen(props) {
         }
     };
     const addCar = (item, value) => {
-        const car = item.currencies.find((el) => el.index === value);
+        const car = item.currencies.find((el) => el.label === value);
         if (car) {
             const res = availableTransport?.map((el) => {
                 if (el.fieldName === item.fieldName) {
-                    return {...el, value: car.index};
+                    return {...el, value: car.label};
                 } else {
                     return el;
                 }
@@ -722,7 +758,7 @@ function MainScreen(props) {
         const pushItem = {index: ind, label: value};
         const res = availableTransport?.map((el) => {
             if (el.fieldName === item.fieldName) {
-                return {...el, value: ind, currencies: [...el.currencies, pushItem]};
+                return {...el, value, currencies: [...el.currencies, pushItem]};
             } else {
                 return el;
             }

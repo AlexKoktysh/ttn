@@ -58,6 +58,8 @@ function ActCard(props) {
                 return props.addProduct(item, value);
             case "car_model":
                 return props.addCar(item, value);
+            case "car_number":
+                return props.addCar(item, value);
             case "shipment_grounds":
                 return props.saveShipment(item, value);
             case "received_person_last_name":
@@ -119,7 +121,7 @@ function ActCard(props) {
                 {step === "1" && <Form label="Вид шаблона" value={templateView} items={props.templateView} change={changeTemplateView} />}
                 {step === "1" && <Form label="На основании" value={type} items={props.type} change={changeType} />}
                 {step === "2" && props.isTTN
-                    && <Form label="Транспорт" value={transportOwner} items={props.transportOwner} change={changeTransportOwner} />
+                    && <Form label="Марка автомобиля" value={transportOwner} items={props.transportOwner} change={changeTransportOwner} />
                 }
                 {listItems}
                 {step === "2" && !props.isTTN

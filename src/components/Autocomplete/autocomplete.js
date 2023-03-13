@@ -7,8 +7,7 @@ import match from 'autosuggest-highlight/match';
 function AutocompleteField(props) {
     const [label, setLabel] = useState("");
     const saveField = (event) => {
-        const val = props.item.fieldName === "car_model" ? event.target.value : event.currentTarget.innerText;
-        props.saveField(val)
+      props.saveField(event.currentTarget.innerText)
     };
     const setNewItem = (event) => {
       return props.saveField(event.target.value);
@@ -16,8 +15,12 @@ function AutocompleteField(props) {
     useEffect(() => {
         switch (props.item.fieldName) {
             case "car_model":
-              const car = props.item.value !== "" ? props.item.currencies.find((item) => item.index === props.item.value) : "";
+              const car = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
               setLabel(car);
+              break;
+            case "car_number":
+              const number = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
+              setLabel(number);
               break;
             case "product_name":
               const obj = props.item.controlValue;
