@@ -1,20 +1,27 @@
 import moment from "moment";
 
 export const changeContrAgentsResult_custom = (element) => {
-    const res_label = element.value && typeof element.value === "string" && element.value?.split(" ");
     switch (element.fieldName) {
         case "shipment_grounds":
             const value = element?.value?.split("от")[0].trim()
             return {fieldName: "shipment_grounds", value};
         case "rights_number":
-            const resObj_dov = {fieldName: "rights_number", value: res_label[0]};
-            const resObj_date = {fieldName: "rights_date", value: res_label[2]};
-            return {...resObj_dov, ...resObj_date};
+            return {fieldName: "rights_number", value: element.value};;
+        case "rights_date":
+            const val = element.value ? element.value : moment().format('YYYY-MM-DD')
+            const rights_date = moment(val, "YYYY-MM-DD").format("DD.MM.YYYY");
+            return { fieldName: element.fieldName, value: rights_date };
         case "shipping_date":
             const date = moment(element.value, "YYYY-MM-DD").format("DD.MM.YYYY")
             return { fieldName: element.fieldName, value: date };
+        case "documents_handed":
+            return { fieldName: element.fieldName, value: element.value };
         default:
-            return {fieldName: element.fieldName, value: element.value}
+            const items = element.items.map((el) => {
+                return {fieldName: el.fieldName, value: el.value};
+            });
+            const id = element.items[0]?.currencies?.find((i) => i.label === element.items[0].value)?.id || "";
+            return {fieldName: element.fieldName, id, value: {...items}};
     }
 };
 export const changeAvailableTransport_result_custom = (element, availableTransport) => {

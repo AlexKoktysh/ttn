@@ -11,29 +11,41 @@ function AutocompleteField(props) {
         props.saveField(val)
     };
     const setNewItem = (event) => {
-        return props.saveField(event.target.value);
+      return props.saveField(event.target.value);
     };
     useEffect(() => {
         switch (props.item.fieldName) {
             case "car_model":
-                const car = props.item.value !== "" ? props.item.currencies.find((item) => item.index === props.item.value) : "";
-                setLabel(car);
-                break;
+              const car = props.item.value !== "" ? props.item.currencies.find((item) => item.index === props.item.value) : "";
+              setLabel(car);
+              break;
             case "product_name":
-                const obj = props.item.controlValue;
-                const index = obj?.indexOf(props.item.value);
-                const product = props.item.value !== "" && obj ? obj.find((el) => el === props.item.value) : "";
-                if (!product) {
-                    const results = {index: props.item?.index || "", label: props.item?.value || ""};
-                    return setLabel(results);
-                }
-                const res = {index: index || "", label: product || ""};
-                setLabel(res);
-                break;
+              const obj = props.item.controlValue;
+              const index = obj?.indexOf(props.item.value);
+              const product = props.item.value !== "" && obj ? obj.find((el) => el === props.item.value) : "";
+              if (!product) {
+                  const results = {index: props.item?.index || "", label: props.item?.value || ""};
+                  return setLabel(results);
+              }
+              const res = {index: index || "", label: product || ""};
+              setLabel(res);
+              break;
             case "shipment_grounds":
-                const dogovor = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
-                setLabel(dogovor);
-                break;
+              const dogovor = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
+              setLabel(dogovor);
+              break;
+            case "received_person_last_name":
+              const received_user = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
+              setLabel(received_user);
+              break;
+            case "allowed_person_last_name":
+              const allowed_user = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
+              setLabel(allowed_user);
+              break;
+            case "handed_person_last_name":
+              const handed_user = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
+              setLabel(handed_user);
+              break;
             default:
                 break;
         }

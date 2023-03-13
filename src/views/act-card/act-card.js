@@ -43,7 +43,11 @@ function ActCard(props) {
         step && props.changeStep(step);
     });
     const change = (changeItem, value) => {
-        props.updatedItems(changeItem, value);
+        if (!changeItem.key) {
+            props.updatedItems(changeItem, value);
+        } else {
+            props.updatedInput(changeItem, value);
+        }
     };
     const changeDate = (label, value) => {
         props.changeDate(label, value);
@@ -57,6 +61,10 @@ function ActCard(props) {
             case "shipment_grounds":
                 return props.saveShipment(item, value);
             case "received_person_last_name":
+                return props.savePerson(item, value);
+            case "allowed_person_last_name":
+                return props.savePerson(item, value);
+            case "handed_person_last_name":
                 return props.savePerson(item, value);
             default:
                 return;

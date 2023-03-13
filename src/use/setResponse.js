@@ -44,9 +44,9 @@ const setResponse_custom = (element, response, allResponse) => {
         case "shipment_grounds":
             return getDogovorCurrencies(element, allResponse);
         case "allowed_person":
-            return getCurrenciesPerson(element, response, false);
+            return getCurrenciesPerson(element, response, true);
         case "handed_person":
-            return getCurrenciesPerson(element, response, false);
+            return getCurrenciesPerson(element, response, true);
         case "received_person":
             return getCurrenciesPerson(element, response, true);
         case "car_model":
@@ -74,10 +74,21 @@ const getCurrenciesPerson = (element, response, isControl) => {
     return {
         ...element,
         items: element.items.map((el_item) => {
+            if (response && (el_item.fieldName === "allowed_person_last_name" || el_item.fieldName === "handed_person_last_name")) {
+                const findItem = response.find((el) => !Number.isInteger(el.id));
+                return {
+                    ...el_item,
+                    currencies: mapEntity?.map((el, index) => {
+                        return { index: index, label: `${el[el_item.key]}`, id: el.id};
+                    }) || [],
+                    controlValue: isControl ? response : "",
+                    value: findItem.last_name,
+                };
+            }
             return {
                 ...el_item,
                 currencies: mapEntity?.map((el, index) => {
-                    return { index: index, label: `${el[el_item.key]}`};
+                    return { index: index, label: `${el[el_item.key]}`, id: el.id};
                 }) || [],
                 controlValue: isControl ? response : "",
             }

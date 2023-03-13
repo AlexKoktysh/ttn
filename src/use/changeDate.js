@@ -1,12 +1,13 @@
 export const changeDate_custom = (itemsMap, label, value, setFunction) => {
-    const results = itemsMap?.map((el) => {
-        if (el.label === label) {
-            return {
-                ...el,
-                value
-            };
-        }
-        return el;
+    const res = itemsMap.find((el) => el.label === label);
+    res.value = value;
+    setFunction((prev) => {
+        const result = prev.map((i) => {
+            if (i.label === label) {
+                return res;
+            }
+            return i;
+        });
+        return result;
     });
-    setFunction(results);
 };

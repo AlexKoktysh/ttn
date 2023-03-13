@@ -11,17 +11,19 @@ export const contrAgents_default = [
         fieldName: "shipment_grounds",
     },
     { index: "2", header: "Отгрузку разрешил", require: false },
-    { index: "3", block: true, fieldName: "allowed_person", items: [
+    { index: "3", block: true, fieldName: "allowed_person", require: true, items: [
         {
             index: "4",
             value: "",
             label: "Фамилия",
             class: true,
             select: true,
+            controlValue: "",
             controlInput: ["allowed_person_name", "allowed_person_second_name", "allowed_person_org_position"],
             autocomplete: true,
             currencies: [],
             require: true,
+            id: "",
             key: "last_name",
             fieldName: "allowed_person_last_name"
         },
@@ -53,8 +55,10 @@ export const contrAgents_default = [
             fieldName: "allowed_person_org_position"
         },
     ]},
+    // { index: "30", value: "", label: "Серия бланка", require: true, fieldName: "blank_series" },
+    // { index: "40", value: "", label: "Номер бланка", require: true, fieldName: "blank_number" },
     { index: "8", header: "Груз сдал", require: false },
-    { index: "9", block: true, fieldName: "handed_person", items: [
+    { index: "9", block: true, fieldName: "handed_person", require: true, items: [
         {
             index: "10",
             value: "",
@@ -62,9 +66,11 @@ export const contrAgents_default = [
             class: true,
             select: true,
             controlInput: ["handed_person_name", "handed_person_second_name", "handed_person_org_position"],
+            controlValue: "",
             autocomplete: true,
             currencies: [],
             require: true,
+            id: "",
             key: "last_name",
             fieldName: "handed_person_last_name"
         },
@@ -97,7 +103,7 @@ export const contrAgents_default = [
         },
     ] },
     { index: "14", header: "Товар к доставке принял", require: false },
-    { index: "15", block: true, fieldName: "received_person", items: [
+    { index: "15", block: true, fieldName: "received_person", require: true, items: [
         { 
             index: "16",
             value: "",
@@ -106,9 +112,10 @@ export const contrAgents_default = [
             select: true,
             autocomplete: true,
             currencies: [],
-            controlInput: ["rights_number", "received_person_name", "received_person_second_name", "received_person_org_position"],
+            controlInput: ["rights_number", "rights_date", "received_person_name", "received_person_second_name", "received_person_org_position"],
             controlValue: "",
             require: true,
+            id: "",
             key: "last_name",
             fieldName: "received_person_last_name"
         },
@@ -140,7 +147,9 @@ export const contrAgents_default = [
             fieldName: "received_person_org_position"
         },
     ]},
-    { index: "20", value: "", label: "Доверенность", require: true, fieldName: "rights_number"},
+    { index: "20", value: "", label: "Доверенность", require: false, fieldName: "rights_number"},
+    { index: "21", value: "", label: "Дата доверенности", date: true, require: false, fieldName: "rights_date"},
+    { index: "22", value: "", label: "С товаром переданы документы", require: false, fieldName: "documents_handed"},
 ];
 export const commodityDictionary_default = [
     {
