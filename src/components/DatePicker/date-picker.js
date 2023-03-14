@@ -11,14 +11,20 @@ function DatePickerControl(props) {
         return propsDate ? moment(value, 'DD.MM.YYYY') : moment(value, 'YYYY-MM-DD')
     };
     const defaultDate = props.item.value ? setPropsDate(props.item.value).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-    const [date, setDate] = useState(defaultDate);
+    const getData = (value) => {
+        if (props.item.fieldName === "rights_date") {
+            return props.item.value;
+        }
+        return value;
+    };
+    const [date, setDate] = useState(getData(defaultDate));
     const change = (value) => {
         const date = moment(value.$d).format('YYYY-MM-DD');
         setDate(date);
         props.change(props.item.label, date);
     };
     useEffect(() => {
-        setDate(defaultDate);
+        setDate(getData(defaultDate));
         props.change(props.item.label, defaultDate);
     }, [defaultDate]);
     return (

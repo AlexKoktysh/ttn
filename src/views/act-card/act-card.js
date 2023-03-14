@@ -14,11 +14,11 @@ function ActCard(props) {
     const [type, setType] = useState(props.type.find((el) => el.checked)?.value || "");
     const [transportOwner, setTransportOwner] = useState(props.transportOwner.find((el) => el.checked)?.value || "");
     const changeTnOrTtn = (val) => {
-        setEntityType(val);
+        setEntityType(Number(val));
         props.changeTnOrTtn(val);
     };
     const changeTemplateView = (val) => {
-        setTemplateView(val);
+        setTemplateView(Number(val));
         props.changeTemplateView(val);
     };
     const changeType = (val) => {

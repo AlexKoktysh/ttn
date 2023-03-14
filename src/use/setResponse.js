@@ -1,7 +1,7 @@
 import { commodityDictionary_default } from "../constants";
 
-export const setResponseMapper = (items, response, allResponse) => {
-    const result = items?.map((element) => setResponse_custom(element, response, allResponse));
+export const setResponseMapper = (items, response, allResponse, res) => {
+    const result = items?.map((element) => setResponse_custom(element, response, allResponse, res));
     return result;
 };
 export const changeLabel = (items, value) => {
@@ -38,7 +38,7 @@ export const getValueLabel = (value) => {
     }
 };
 
-const setResponse_custom = (element, response, allResponse) => {
+const setResponse_custom = (element, response, allResponse, res) => {
     const element_name = element.fieldName;
     switch (element_name) {
         case "shipment_grounds":
@@ -55,6 +55,8 @@ const setResponse_custom = (element, response, allResponse) => {
             return getCurrenciesCar(element, response, true, "car_number", response);    
         case "product_name":
             return getCurrencies(element, response?.commodityDictionary, true, "product_name", response?.commodityOptions);
+        case "blank_number":
+            return {...element, value: res?.docNumber || "", disabled: !!res.docNumber};
         default:
             return element;
     }

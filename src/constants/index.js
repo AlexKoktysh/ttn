@@ -148,7 +148,7 @@ export const contrAgents_default = [
     { index: "20", value: "", label: "Доверенность", require: false, fieldName: "rights_number"},
     { index: "21", value: "", label: "Дата доверенности", date: true, require: false, fieldName: "rights_date"},
     { index: "22", value: "", label: "Серия бланка", require: true, fieldName: "blank_series" },
-    { index: "23", value: "", label: "Номер бланка", require: true, fieldName: "blank_number" },
+    { index: "23", value: "", label: "Номер бланка", require: true, fieldName: "blank_number", disabled: false },
     { index: "24", value: "", label: "С товаром переданы документы", require: false, fieldName: "documents_handed"},
 ];
 export const commodityDictionary_default = [
@@ -177,17 +177,9 @@ export const commodityDictionary_default = [
     { index: "10", value: "", label: "Масса (необязательное)", fieldName: "product_weight", require: false },
     { index: "11", value: "", label: "Количество грузовых мест (необязательное)", fieldName: "qty_cargo_place", require: false },
 ];
-export const tnOrTtnField = [
-    { index: "0", value: "1", label: "ТН", checked: false },
-    { index: "1", value: "2", label: "ТТН", checked: false },
-];
-export const templateViewField = [
-    { index: "0", value: "1", label: "Вертикально", checked: false },
-    { index: "1", value: "2", label: "Горизонтально", checked: false },
-];
 export const typeFields = [
-    { index: "0", value: "1", label: "Счет", checked: false },
-    { index: "1", value: "2", label: "Договор", checked: true },
+    { index: "0", value: "1", label: "Договор", checked: true },
+    { index: "1", value: "2", label: "Счет", checked: false },
 ];
 export const availableTransport_default = [
     {

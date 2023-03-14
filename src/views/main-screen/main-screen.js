@@ -14,8 +14,6 @@ import {
     contrAgents_default,
     availableTransport_default,
     commodityDictionary_default,
-    tnOrTtnField,
-    templateViewField,
     typeFields,
     steps,
 } from "../../constants/index.js";
@@ -39,8 +37,8 @@ function MainScreen(props) {
     const [contrAgents, setContrAgents] = useState(contrAgents_default);
     const [availableTransport, setAvailableTransport] = useState(availableTransport_default);
     const [commodityDictionary, setCommodityDictionary] = useState(commodityDictionary_default);
-    const [tnOrTtn, setTnOrTtn] = useState(tnOrTtnField);
-    const [templateView, setTemplateView] = useState(templateViewField);
+    const [tnOrTtn, setTnOrTtn] = useState([]);
+    const [templateView, setTemplateView] = useState([]);
     const [type, setType] = useState(typeFields);
     const [resSteps, setResSteps] = useState(steps);
     const [isShowSample, setIsShowSample] = useState(false);
@@ -306,7 +304,7 @@ function MainScreen(props) {
         const check = type.find((el) => el.checked)?.label;
         const agent = getContrAgent(check);
         const val = value?.split("от")[0].trim() || "";
-        if (agent.length) {
+        if (agent?.length) {
             const res = contrAgents.map((element) => {
                 if (element.items?.length && element.fieldName === "received_person") {
                     const find = agent.find((el) => el.dog_number === val || el.doc_number === val);
@@ -494,13 +492,19 @@ function MainScreen(props) {
         setIsShowAddCommodityDictionary(false);
     }, [commodityDictionary, step]);
     useEffect(() => {
-        const contrAgents_server = setResponseMapper(contrAgents, response?.ttnPersons, response?.dogovorDictionary);
+        const contrAgents_server = setResponseMapper(contrAgents, response?.ttnPersons, response?.dogovorDictionary, response);
         const availableTransport_server = setResponseMapper(availableTransport, response?.availableTransport);
         setAvailableTransport(availableTransport_server);
         setContrAgents(contrAgents_server);
         if (response?.defaultCurrencyCode) {
             const commodityDictionary_server = changeLabel(commodityDictionary, response.defaultCurrencyCode);
             setCommodityDictionary(commodityDictionary_server);
+        }
+        if (response?.tnTTNKinds) {
+            setTnOrTtn(response.tnTTNKinds);
+        }
+        if (response?.ttnOrientationKinds) {
+            setTemplateView(response.ttnOrientationKinds);
         }
         const transportOwner_server = response?.transportOwner;
         transportOwner_server && setTransportOwner(transportOwner_server);
@@ -577,6 +581,7 @@ function MainScreen(props) {
                 const sample_id_obj = {fieldName: "sample_id", value: sample_id};
 
                 const transport_owner_id = {fieldName: "transport_owner_id", value: isTransportOwner.value || ""};
+                const type_server = { fieldName:"document_type", value: type.find((el) => el.checked).label };
 
                 const res = [
                     ...contrAgents_result,
@@ -586,6 +591,7 @@ function MainScreen(props) {
                     ...commodityDictionary_result,
                     sample_id_obj,
                     transport_owner_id,
+                    type_server,
                 ];
                 setServerResult(res);
                 setIsShowSample(true);
@@ -601,10 +607,11 @@ function MainScreen(props) {
         templateView,
         commodityDictionary_result,
         transportOwner,
+        type,
     ]);
     const changeTnOrTtn = (val) => {
         const changeItem = tnOrTtn?.map((el) => {
-            if (el.value === val) {
+            if (el.value === Number(val)) {
                 return {...el, checked: true};
             } else {
                 return {...el, checked: false};
@@ -614,7 +621,7 @@ function MainScreen(props) {
     };
     const changeTemplateView = (val) => {
         const changeItem = templateView?.map((el) => {
-            if (el.value === val) {
+            if (el.value === Number(val)) {
                 return {...el, checked: true};
             } else {
                 return {...el, checked: false};
@@ -631,7 +638,7 @@ function MainScreen(props) {
             }
         });
         setType(changeItem);
-        if (changeItem[0].checked) {
+        if (changeItem[1].checked) {
             getInvoice_server();
         }
     };
