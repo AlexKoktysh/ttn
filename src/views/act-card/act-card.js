@@ -94,15 +94,16 @@ function ActCard(props) {
                     {
                         item.items.map((element) => {
                             return (
-                                <TextFieldControl
-                                    item={element}
-                                    key={element.index}
-                                    saveField={saveField}
-                                    change={change}
-                                    changeDate={changeDate}
-                                    getNewCurrencies={props.getNewCurrencies}
-                                    loader={props.loader}
-                                />
+                                <Box sx={{ mr: element.class ? 1 : 0}} key={element.index}>
+                                    <TextFieldControl
+                                        item={element}
+                                        saveField={saveField}
+                                        change={change}
+                                        changeDate={changeDate}
+                                        getNewCurrencies={props.getNewCurrencies}
+                                        loader={props.loader}
+                                    />
+                                </Box>
                             );
                         })
                     }

@@ -56,7 +56,7 @@ const setResponse_custom = (element, response, allResponse, res) => {
         case "product_name":
             return getCurrencies(element, response?.commodityDictionary, true, "product_name", response?.commodityOptions);
         case "blank_number":
-            return {...element, value: res?.docNumber || "", disabled: !!res.docNumber};
+            return {...element, value: res?.docNumber || "", disabled: !!res?.docNumber};
         default:
             return element;
     }

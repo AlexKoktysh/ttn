@@ -18,5 +18,11 @@
 }
 .block {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    .MuiAutocomplete-root {
+        min-width: 144px !important;
+    }
+    .MuiFormControl-root {
+        min-width: 144px !important;
+    }
 }

@@ -3,7 +3,6 @@ import { FormControl, TextField } from "@mui/material";
 import DatePickerControl from "../../components/DatePicker/date-picker.js";
 import "./text-field-control.scss";
 import Autocomplete from "../Autocomplete/autocomplete.js";
-import Box from '@mui/material/Box';
 
 function TextFieldControl(props) {
     const [value, setValue] = useState(props?.item?.value || "");
@@ -31,16 +30,13 @@ function TextFieldControl(props) {
     return (
         <FormControl className="field">
             {props?.item && props.item.date && <DatePickerControl item={props.item} change={changeDate} />}
-            {props.item.block && <div className="block"></div>}
             {props?.item && props.item.autocomplete &&
-                <Box sx={{ mr: props.item.class ? 1 : 0}}>
-                    <Autocomplete
-                        item={props.item}
-                        key={props.item.index}
-                        saveField={saveField}
-                        loader={props.loader}
-                    />
-                </Box>
+                <Autocomplete
+                    item={props.item}
+                    key={props.item.index}
+                    saveField={saveField}
+                    loader={props.loader}
+                />
             }
             {props?.item && !props.item.date && !props.item.autocomplete &&
                 <TextField
@@ -50,6 +46,8 @@ function TextFieldControl(props) {
                     size="small"
                     onChange={changeInput}
                     value={value}
+                    multiline={true}
+                    maxRows={3}
                     disabled={props.item.disabled}
                 ></TextField>
             }

@@ -35,19 +35,23 @@ function AutocompleteField(props) {
               break;
             case "shipment_grounds":
               const dogovor = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
-              setLabel(dogovor);
+              const value_dogovor = typeof dogovor !== "undefined" ? dogovor : "";
+              setLabel(value_dogovor);
               break;
             case "received_person_last_name":
               const received_user = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
-              setLabel(received_user);
+              const value_received_user = typeof received_user !== "undefined" ? received_user : "";
+              setLabel(value_received_user);
               break;
             case "allowed_person_last_name":
               const allowed_user = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
-              setLabel(allowed_user);
+              const value_allowed_user = typeof allowed_user !== "undefined" ? allowed_user : "";
+              setLabel(value_allowed_user);
               break;
             case "handed_person_last_name":
-              const handed_user = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) : "";
-              setLabel(handed_user);
+              const handed_user = props.item.value !== "" ? props.item.currencies.find((item) => item.label === props.item.value) || "" : "";
+              const value_handed_user = typeof handed_user !== "undefined" ? handed_user : "";
+              setLabel(value_handed_user);
               break;
             default:
                 break;
@@ -65,7 +69,7 @@ function AutocompleteField(props) {
             onChange={saveField}
             options={props.item.currencies?.map((option) => option)}
             renderInput={(params) => {
-                return <TextField {...params} label={props.item.label} onChange={setNewItem} />
+                return <TextField multiline={true} maxRows={3} {...params} label={props.item.label} onChange={setNewItem} />
             }}
             renderOption={(props, option, { inputValue }) => {
                 const matches = match(option.label, inputValue, { insideWords: true });

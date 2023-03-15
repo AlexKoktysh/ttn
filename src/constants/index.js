@@ -49,7 +49,6 @@ export const contrAgents_default = [
             index: "7",
             value: "",
             label: "Должность",
-            class: true,
             require: true,
             key: "org_position",
             fieldName: "allowed_person_org_position"
@@ -94,7 +93,6 @@ export const contrAgents_default = [
             index: "13",
             value: "",
             label: "Должность",
-            class: true,
             require: true,
             key: "org_position",
             fieldName: "handed_person_org_position"
@@ -139,7 +137,6 @@ export const contrAgents_default = [
             index: "19",
             value: "",
             label: "Должность",
-            class: true,
             require: true,
             key: "org_position",
             fieldName: "received_person_org_position"
