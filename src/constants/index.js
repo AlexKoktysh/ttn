@@ -142,7 +142,7 @@ export const contrAgents_default = [
             fieldName: "received_person_org_position"
         },
     ]},
-    { index: "20", value: "", label: "Доверенность", require: false, fieldName: "rights_number"},
+    { index: "20", value: "", label: "Доверенность", require: true, fieldName: "rights_number"},
     { index: "21", value: "", label: "Дата доверенности", date: true, require: false, fieldName: "rights_date"},
     { index: "22", value: "", label: "Серия бланка", require: true, fieldName: "blank_series" },
     { index: "23", value: "", label: "Номер бланка", require: true, fieldName: "blank_number", disabled: false },

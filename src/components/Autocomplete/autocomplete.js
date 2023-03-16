@@ -10,7 +10,9 @@ function AutocompleteField(props) {
       props.saveField(event.currentTarget.innerText)
     };
     const setNewItem = (event) => {
-      return props.saveField(event.target.value);
+      if (event.target.value !== "") {
+        return props.saveField(event.target.value);
+      }
     };
     useEffect(() => {
         switch (props.item.fieldName) {
@@ -69,7 +71,7 @@ function AutocompleteField(props) {
             onChange={saveField}
             options={props.item.currencies?.map((option) => option)}
             renderInput={(params) => {
-                return <TextField multiline={true} maxRows={3} {...params} label={props.item.label} onChange={setNewItem} />
+                return <TextField multiline={true} maxRows={3} {...params} label={props.item.label} onBlur={setNewItem} />
             }}
             renderOption={(props, option, { inputValue }) => {
                 const matches = match(option.label, inputValue, { insideWords: true });

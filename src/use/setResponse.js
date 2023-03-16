@@ -89,6 +89,9 @@ const getCurrenciesPerson = (element, response, isControl) => {
                     value: findItem.last_name,
                 };
             }
+            if (response && (el_item.fieldName === "received_person_second_name" || el_item.fieldName === "received_person_name" || el_item.fieldName === "received_person_org_position")) {
+                return {...el_item, value: ""};
+            }
             return {
                 ...el_item,
                 currencies: mapEntity?.map((el, index) => {

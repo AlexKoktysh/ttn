@@ -203,12 +203,6 @@ function MainScreen(props) {
                 return "";
         }
     };
-    const changeAvailableTransport = (fieldName, parenValue) => {
-        if (!response?.availableTransport) {
-            return;
-        }
-        return changeTransport(response, fieldName, parenValue, availableTransport);
-    };
     const expensiveCalculation = (items, changeFunction, setFunction, val) => {
         const controlsInput = items[val].controlInput;
         const parent = items.find((el) => el.select);
@@ -244,7 +238,7 @@ function MainScreen(props) {
                 const item = items[val].items.find((element) => element.fieldName === el);
                 if (item) {
                     const val = parent.controlValue.find((i) => i.last_name === parent.value);
-                    return {...item, value: val ? val[item.key] : item.value};
+                    return {...item, value: val ? val[item.key] : item.value, id: val.id};
                 } else {
                     return el;
                 }
@@ -269,7 +263,24 @@ function MainScreen(props) {
                 return el;
             });
             if (val === 7) {
-                setFunction(res);
+                const id = res[7].items[0].id;
+                if (!Number.isInteger(id)) {
+                    const result = res.map((i) => {
+                        if (i.fieldName === "rights_number" || i.fieldName === "rights_date") {
+                            return { ...i, require: false };
+                        }
+                        return i;
+                    });
+                    setFunction(result);
+                } else {
+                    const result = res.map((i) => {
+                        if (i.fieldName === "rights_number" || i.fieldName === "rights_date") {
+                            return { ...i, require: true };
+                        }
+                        return i;
+                    });
+                    setFunction(result);
+                }
             }
             return setFunction((prev) => {
                 const res = prev?.map((el) => {
@@ -312,7 +323,7 @@ function MainScreen(props) {
                         const items = element.items.map((i) => {
                             if (i.fieldName === "received_person_last_name") {
                                 const newControlValue = {
-                                    id: i.controlValue.length + 1,
+                                    id: find.id,
                                     last_name: find["contragent_owner_last_name"],
                                     name: find["contragent_owner_name"],
                                     org_position: find["contragent_owner_org_position"] || "",
@@ -321,13 +332,14 @@ function MainScreen(props) {
                                     second_name: find["contragent_owner_second_name"],
                                 }
                                 const controlValue = [...i.controlValue, newControlValue];
-                                const newCurrencies = { index: i.currencies.length + 1, label: find["contragent_owner_last_name"] };
+                                const newCurrencies = { index: i.currencies.length + 1, label: find["contragent_owner_last_name"], id: find["id"] };
                                 const currencies = [...i.currencies, newCurrencies];
                                 return {
                                     ...i,
                                     value: find["contragent_owner_last_name"],
                                     controlValue,
                                     currencies,
+                                    id: find.id,
                                 };
                             }
                             return i;
@@ -341,7 +353,7 @@ function MainScreen(props) {
                         const items = element.items.map((i) => {
                             if (i.fieldName === "received_person_last_name") {
                                 const newControlValue = {
-                                    id: i.controlValue.length + 1,
+                                    id: findDogovor.id,
                                     last_name: findDogovor["contragent_owner_last_name"],
                                     name: findDogovor["contragent_owner_name"],
                                     org_position: findDogovor["contragent_owner_org_position"] || "",
@@ -350,13 +362,14 @@ function MainScreen(props) {
                                     second_name: findDogovor["contragent_owner_second_name"],
                                 }
                                 const controlValue = [...i.controlValue, newControlValue];
-                                const newCurrencies = { index: i.currencies.length + 1, label: findDogovor["contragent_owner_last_name"] };
+                                const newCurrencies = { index: i.currencies.length + 1, label: findDogovor["contragent_owner_last_name"], id: findDogovor["id"] };
                                 const currencies = [...i.currencies, newCurrencies];
                                 return {
                                     ...i,
                                     value: findDogovor["contragent_owner_last_name"],
                                     controlValue,
                                     currencies,
+                                    id: find.id,
                                 };
                             }
                             return i;
@@ -639,7 +652,11 @@ function MainScreen(props) {
         });
         setType(changeItem);
         if (changeItem[1].checked) {
-            getInvoice_server();
+            return getInvoice_server();
+        }
+        if (changeItem[0].checked) {
+            const contrAgents_server = setResponseMapper(contrAgents, response?.ttnPersons, response?.dogovorDictionary, response);
+            setContrAgents(contrAgents_server)
         }
     };
     const getInvoice_server = async () => {
@@ -764,7 +781,7 @@ function MainScreen(props) {
         const ind = item.currencies.length;
         const pushItem = {index: ind, label: value};
         const res = availableTransport?.map((el) => {
-            if (el.fieldName === item.fieldName) {
+            if (el.fieldName === item.fieldName && pushItem.label !== "") {
                 return {...el, value, currencies: [...el.currencies, pushItem]};
             } else {
                 return el;
@@ -820,7 +837,7 @@ function MainScreen(props) {
                 if (el.fieldName === "received_person" || el.fieldName === "allowed_person" || el.fieldName === "handed_person") {
                     const items = el.items.map((element) => {
                         if (element.fieldName === item.fieldName) {
-                            return {...element, value};
+                            return {...element, value, id: person.id};
                         } else {
                             return element;
                         }
