@@ -175,8 +175,8 @@ export const commodityDictionary_default = [
     { index: "11", value: "", label: "Количество грузовых мест (необязательное)", fieldName: "qty_cargo_place", require: false },
 ];
 export const typeFields = [
-    { index: "0", value: "1", label: "Договор", checked: true },
-    { index: "1", value: "2", label: "Счет", checked: false },
+    { index: "0", value: "1", label: "Договор", checked: true, server: "dogovor" },
+    { index: "1", value: "2", label: "Счет", checked: false, server: "invoice" },
 ];
 export const availableTransport_default = [
     {

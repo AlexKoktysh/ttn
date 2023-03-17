@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import ActCard from "../act-card/act-card.js";
 import {
     getDataForCreateTtn,
-    sendTemplate,
     sendCommodityDictionary,
     showSection,
     deleteSection,
@@ -594,7 +593,7 @@ function MainScreen(props) {
                 const sample_id_obj = {fieldName: "sample_id", value: sample_id};
 
                 const transport_owner_id = {fieldName: "transport_owner_id", value: isTransportOwner.value || ""};
-                const type_server = { fieldName:"document_type", value: type.find((el) => el.checked).label };
+                const type_server = { fieldName:"document_type", value: type.find((el) => el.checked).server };
 
                 const res = [
                     ...contrAgents_result,
@@ -678,7 +677,7 @@ function MainScreen(props) {
         setTransportOwner(changeItem);
     }
     const clickSample = async () => {
-        await sendTemplate(serverResult);
+        props.sendTemplate(serverResult);
     };
     const changeDate = (label, value) => {
         switch (label) {

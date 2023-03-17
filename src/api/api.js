@@ -30,14 +30,10 @@ export const getDataForCreateTtn = async () => {
     return response.data;
 };
 
-export const fillTemplate = async (value) => {
-    const response = await instance.post("fill_template", value);
-    return response.data;
-};
-
 export const sendTemplate = async (params) => {
     const json = {...params};
-    console.log("json", json);
+    const response = await instance.post("fill_template", json);
+    return response.data;
 };
 
 export const sendCommodityDictionary = async (params) => {
