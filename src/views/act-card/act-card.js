@@ -23,7 +23,7 @@ function ActCard(props) {
     };
     const changeType = (val) => {
         setType(val);
-        props.changeType(val);
+        val !== type && props.changeType(val);
     };
     const changeTransportOwner = (val) => {
         setTransportOwner(val);

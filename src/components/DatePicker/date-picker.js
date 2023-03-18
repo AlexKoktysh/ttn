@@ -23,6 +23,12 @@ function DatePickerControl(props) {
         setDate(date);
         props.change(props.item.label, date);
     };
+    const setError = () => {
+        if (props.item.fieldName === "rights_date") {
+            const el = document.getElementsByClassName("MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-disabled Mui-error MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root");
+            el[0].style.color = "rgba(0, 0, 0, 0.38)";
+        }
+    };
     useEffect(() => {
         setDate(getData(defaultDate));
         props.change(props.item.label, defaultDate);
@@ -33,6 +39,7 @@ function DatePickerControl(props) {
                 inputFormat="DD.MM.YYYY"
                 disableFuture={true}
                 value={date}
+                onError={setError}
                 label={props.item.label}
                 onChange={(newValue) => change(newValue)}
                 renderInput={(params) => <TextField {...params} size="small" />}

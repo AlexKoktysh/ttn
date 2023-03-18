@@ -266,7 +266,7 @@ function MainScreen(props) {
                 if (!Number.isInteger(id)) {
                     const result = res.map((i) => {
                         if (i.fieldName === "rights_number" || i.fieldName === "rights_date") {
-                            return { ...i, require: false };
+                            return { ...i, require: false, disabled: true };
                         }
                         return i;
                     });
@@ -274,7 +274,7 @@ function MainScreen(props) {
                 } else {
                     const result = res.map((i) => {
                         if (i.fieldName === "rights_number" || i.fieldName === "rights_date") {
-                            return { ...i, require: true };
+                            return { ...i, require: true, disabled: false };
                         }
                         return i;
                     });
@@ -662,7 +662,7 @@ function MainScreen(props) {
         const res = await getInvoice();
         if (res) {
             setInvoice_response(res);
-            const contrAgents_server = setResponseMapper(contrAgents, response?.ttnPersons, res.invoiceDictionary);
+            const contrAgents_server = setResponseMapper(contrAgents, response?.ttnPersons, res.invoiceDictionary, response);
             setContrAgents(contrAgents_server);
         }
     };
