@@ -10,7 +10,7 @@ function AutocompleteField(props) {
       props.saveField(event.currentTarget.innerText)
     };
     const setNewItem = (event) => {
-      if (event.target.value !== "") {
+      if (event.target.value !== "" && props.item.fieldName !== "shipment_grounds" && props.item.fieldName !== "product_name") {
         return props.saveField(event.target.value);
       }
     };

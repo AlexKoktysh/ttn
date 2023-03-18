@@ -66,3 +66,8 @@ export const getInvoice = async () => {
     const response = await instance.post("get_available_invoices");
     return response.data;
 };
+
+export const update_commodity_dictionary_by_invoice = async (data) => {
+    const response = await instance.post("update_commodity_section_by_invoice", data);
+    return response.data;
+};

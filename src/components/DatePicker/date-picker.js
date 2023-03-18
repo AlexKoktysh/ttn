@@ -25,7 +25,7 @@ function DatePickerControl(props) {
     };
     const setError = () => {
         if (props.item.fieldName === "rights_date") {
-            const el = document.getElementsByClassName("MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-disabled Mui-error MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-1pysi21-MuiFormLabel-root-MuiInputLabel-root");
+            const el = document.getElementsByClassName("MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-disabled Mui-error MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined");
             if (el && el[0] && el[0]?.style) {
                 el[0].style.color = "rgba(0, 0, 0, 0.38)";
             }

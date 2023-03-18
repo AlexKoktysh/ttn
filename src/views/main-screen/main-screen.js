@@ -8,6 +8,7 @@ import {
     getCommodityDictionary,
     updateCommodityDictionary,
     getInvoice,
+    update_commodity_dictionary_by_invoice,
 } from "../../api/api";
 import {
     contrAgents_default,
@@ -27,6 +28,7 @@ import {
 } from "../../use/change_result_custom.js";
 import { CircularProgress } from "@mui/material";
 import Box from '@mui/material/Box';
+import ModalWindow from "../../components/modal/modal.js";
 
 function MainScreen(props) {
     const [serverResult, setServerResult] = useState([]);
@@ -55,6 +57,7 @@ function MainScreen(props) {
     const [server_response, setServer_response] = useState(false);
     const [loader, setLoader] = useState(false);
     const [invoice_response, setInvoice_response] = useState([]);
+    const [allertMessage, setAllertMessage] = useState(false);
     useEffect(() => {
         const fetch = async () => {
             setServer_response(true);
@@ -799,10 +802,36 @@ function MainScreen(props) {
                 return;
         }
     };
-    const saveShipment_invoice = (item, value) => {
+    const x = async () => {
+        const response = await showSection(productPosition_active);
+            const resArray = [...productPosition];
+            if (response?.data?.sectionCount >= 1 && response.data.sectionCount + 1 > productPosition.length) {
+                for (let i = 1; i < response.data.sectionCount; i++) {
+                    const find = resArray.find((el) => el.index === i);
+                    !find && resArray.push({ index: i, value: i + 1, label: i + 1 })
+                }
+                setProductPosition(resArray);
+            }
+            if (response?.status === 200) {
+                const newCommodityDictionary = commodityDictionary?.map((element) => {
+                    const value = response.data.columns[element.fieldName];
+                    if (element.fieldName === "product_name") {
+                        return {...element, value: value ? value : "", ttn_max_qty: response.data.columns.ttn_max_qty || ""};
+                    }
+                    return {...element, value: value ? value : ""};
+                });
+                setCommodityDictionary(newCommodityDictionary);
+            }
+    };
+    const saveShipment_invoice = async (item, value) => {
         const invoice = value.split("от")[0].trim();
         const shipment = invoice_response?.invoiceDictionary.find((el) => el.doc_number === invoice);
-        shipment && setShipment_grounds(shipment);
+        if (shipment) {
+            shipment.alertMessage && setAllertMessage(shipment.alertMessage);
+            setShipment_grounds(shipment);
+            const updated = await update_commodity_dictionary_by_invoice({"invoice_number": shipment.doc_number, "invoice_date": shipment.doc_start_date});
+            updated["ajax-response"] === "Успешно добавлена позиция использованного компонента" && x();
+        }
         if (invoice) {
             const res = contrAgents?.map((el) => {
                 if (el.fieldName === item.fieldName) {
@@ -867,6 +896,9 @@ function MainScreen(props) {
             setContrAgents(res);
         }
     };
+    const closeModal = () => {
+        setAllertMessage(false);
+    };
 
     return (
         <div id="main-screen">
@@ -875,7 +907,8 @@ function MainScreen(props) {
                     <CircularProgress />
                 </Box>
             }
-            {!server_response &&
+            {!server_response && allertMessage && <ModalWindow closeModal={closeModal} />}
+            {!allertMessage && !server_response &&
                 <ActCard
                     changeStep={(step) => setStep(step)}
                     items={activeFormItems}
