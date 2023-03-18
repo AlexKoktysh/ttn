@@ -144,7 +144,7 @@ function ActCard(props) {
                     <Button onClick={props.clickSample} disabled={!props.isShowSample} color="secondary" variant="contained">Заполнить шаблон</Button>
                 </Box>
                 <Box sx={{ mb: 4 }}>
-                    <Button disabled={!props.isShowSample && !props.showAddButton} color="secondary" variant="contained">Создать</Button>
+                    <Button disabled={!props.showAddButton} onClick={props.clickAdd} color="secondary" variant="contained">Создать</Button>
                 </Box>
             </div>
         </div>

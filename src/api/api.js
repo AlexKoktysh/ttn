@@ -71,3 +71,8 @@ export const update_commodity_dictionary_by_invoice = async (data) => {
     const response = await instance.post("update_commodity_section_by_invoice", data);
     return response.data;
 };
+
+export const addSample = async (params) => {
+    const json = {...params};
+    console.log(json);
+};

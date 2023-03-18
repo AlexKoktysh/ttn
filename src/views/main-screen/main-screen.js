@@ -9,6 +9,7 @@ import {
     updateCommodityDictionary,
     getInvoice,
     update_commodity_dictionary_by_invoice,
+    addSample,
 } from "../../api/api";
 import {
     contrAgents_default,
@@ -899,6 +900,14 @@ function MainScreen(props) {
     const closeModal = () => {
         setAllertMessage(false);
     };
+    const clickAdd = async () => {
+        const response = await addSample(serverResult);
+        // if (response["ajax-response"] === "Счет успешно сохранен") {
+        //     window.location.reload();
+        // } else {
+        //     alert("Проверьте правильность заполненных полей");
+        // }
+    };
 
     return (
         <div id="main-screen">
@@ -941,6 +950,7 @@ function MainScreen(props) {
                     loader={loader}
                     savePerson={savePerson}
                     updatedInput={updatedInput}
+                    clickAdd={clickAdd}
                 />
             }
         </div>
