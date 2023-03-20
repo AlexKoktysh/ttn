@@ -22,7 +22,11 @@ instance_commodity.interceptors.response.use(
     (error) => checkError(error),
 );
 const checkError = (error) => {
-    alert(error.message);
+    if (error.response.data["ajax-errors"] !== "Произошли ошибки при валидации данных формы.") {
+        return alert(error.response.data["ajax-errors"]);
+    }
+    alert(error.response.data["ajax-errors"]);
+    return error.response.data["fail_fields"];
 };
 
 export const getDataForCreateTtn = async () => {
@@ -33,7 +37,10 @@ export const getDataForCreateTtn = async () => {
 export const sendTemplate = async (params) => {
     const json = {...params};
     const response = await instance.post("fill_template", json);
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
+    return {type: "error", field: response};
 };
 
 export const sendCommodityDictionary = async (params) => {
@@ -74,6 +81,6 @@ export const update_commodity_dictionary_by_invoice = async (data) => {
 
 export const addSample = async (params) => {
     const json = {...params};
-    const response = await instance.post("create_ttn", json);
+    const response = await instance.post("create", json);
     return response.data;
 };

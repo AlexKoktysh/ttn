@@ -150,10 +150,10 @@ function MainScreen(props) {
         const val = !Array.isArray(changeItem.controlInput) && changeItem.controlValue ? funcDate : value;
         setFunction(items?.map((item) => {
             if (item.fieldName === field) {
-                return { ...item, value: val };
+                return { ...item, value: val, error: false };
             } else {
                 if (item.fieldName === changeItem.fieldName) {
-                    return { ...item, value}
+                    return { ...item, value, error: false}
                 } else {
                     return item;
                 }
@@ -630,6 +630,7 @@ function MainScreen(props) {
         commodityDictionary_result,
         transportOwner,
         type,
+        sample_id,
     ]);
     const changeTnOrTtn = (val) => {
         const changeItem = tnOrTtn?.map((el) => {
@@ -685,9 +686,33 @@ function MainScreen(props) {
             }
         });
         setTransportOwner(changeItem);
-    }
+    };
+    const handleError = (field) => {
+        const errorFields = Object.entries(field);
+        const contrAgents_error = contrAgents.map((el) => {
+            const find = errorFields.find((i) => i[0] === el.fieldName);
+            if (find) {
+                return {...el, error: true, message: find[1][0]};
+            } else {
+                return el;
+            }
+        });
+        setContrAgents(contrAgents_error);
+        const availableTransport_error = availableTransport.map((el) => {
+            const find = errorFields.find((i) => i[0] === el.fieldName);
+            if (find) {
+                return {...el, error: true, message: find[1][0]};
+            } else {
+                return el;
+            }
+        });
+        setAvailableTransport(availableTransport_error);
+    };
     const clickSample = async () => {
-        props.sendTemplate(serverResult);
+        const error = await props.sendTemplate(serverResult);
+        if (error) {
+            handleError(error.field);
+        }
     };
     const changeDate = (label, value) => {
         switch (label) {
@@ -908,7 +933,7 @@ function MainScreen(props) {
     };
     const clickAdd = async () => {
         const response = await addSample(serverResult);
-        if (response["ajax-response"] === "Счет успешно сохранен") {
+        if (response["ajax-response"] === "ТН/ТТН успешно сохранен") {
             window.location.reload();
         } else {
             alert("Проверьте правильность заполненных полей");

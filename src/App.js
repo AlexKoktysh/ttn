@@ -14,12 +14,15 @@ function App() {
   const getTemplate = async (obj) => {
     setLoading(true);
     const response = await sendTemplate(obj);
-    response && setSample_id(response["ajax-response-with-data"]);
-    response && setPath(response["file_path"]);
-    if (response["ajax-response"] === "Шаблон акта успешно получен") {
-      setShowAddButton(true);
+    if (!response.type) {
+      response && setSample_id(response["ajax-response-with-data"]);
+      response && setPath(response["file_path"]);
+      if (response["ajax-response"] === "Шаблон акта успешно получен") {
+        setShowAddButton(true);
+      }
     }
     setLoading(false);
+    return response;
   };
   return (
     <div className="App">

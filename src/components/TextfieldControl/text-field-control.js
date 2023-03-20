@@ -47,6 +47,8 @@ function TextFieldControl(props) {
                     onChange={changeInput}
                     value={value}
                     multiline={true}
+                    error={props.item.error}
+                    helperText={props.item.error ? props.item.message : ""}
                     maxRows={3}
                     disabled={props.item.disabled}
                 ></TextField>
