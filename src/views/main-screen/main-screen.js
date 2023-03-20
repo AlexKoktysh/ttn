@@ -609,6 +609,12 @@ function MainScreen(props) {
                     transport_owner_id,
                     type_server,
                 ];
+                if (!isTTN) {
+                    const result_obj = res.filter((i) => i.fieldName !== "transport_owner_id");
+                    setServerResult(result_obj);
+                    setIsShowSample(true);
+                    return;
+                }
                 setServerResult(res);
                 setIsShowSample(true);
             } else {
@@ -902,11 +908,11 @@ function MainScreen(props) {
     };
     const clickAdd = async () => {
         const response = await addSample(serverResult);
-        // if (response["ajax-response"] === "Счет успешно сохранен") {
-        //     window.location.reload();
-        // } else {
-        //     alert("Проверьте правильность заполненных полей");
-        // }
+        if (response["ajax-response"] === "Счет успешно сохранен") {
+            window.location.reload();
+        } else {
+            alert("Проверьте правильность заполненных полей");
+        }
     };
 
     return (

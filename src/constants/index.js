@@ -205,7 +205,7 @@ export const availableTransport_default = [
     { index: "2", value: "", label: "Модель прицепа", require: false, fieldName: "trailer_model", },
     { index: "3", value: "", label: "Номер прицепа", require: false, fieldName: "trailer_number", },
     { index: "4", value: "", label: "ФИО водителя", require: true, fieldName: "last_name", },
-    { index: "5", value: "", label: "УНП перевозчика", require: false, fieldName: "driver_unp", },
+    { index: "5", value: "", label: "УНП/ИНН водителя", require: false, fieldName: "driver_unp", },
     { index: "6", value: "", label: "Пункт погрузки", require: true, fieldName: "loading_point_address", },
     { index: "7", value: "", label: "Пункт разгрузки", require: true, fieldName: "unloading_point_address", },
     { index: "8", value: "", label: "Номер путевого листа", require: false, fieldName: "waybill_number", },

@@ -9,7 +9,7 @@ const instance = axios.create({
 });
 instance.interceptors.response.use(
     (response) => response,
-    (error) => checkError(error)
+    (error) => checkError(error),
 );
 const instance_commodity = axios.create({
     baseURL: `https://portal.liloo.by/api/services/`,
@@ -19,7 +19,7 @@ const instance_commodity = axios.create({
 });
 instance_commodity.interceptors.response.use(
     (response) => response,
-    (error) => checkError(error)
+    (error) => checkError(error),
 );
 const checkError = (error) => {
     alert(error.message);
@@ -74,5 +74,6 @@ export const update_commodity_dictionary_by_invoice = async (data) => {
 
 export const addSample = async (params) => {
     const json = {...params};
-    console.log(json);
+    const response = await instance.post("create_ttn", json);
+    return response.data;
 };

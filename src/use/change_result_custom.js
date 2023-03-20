@@ -8,8 +8,7 @@ export const changeContrAgentsResult_custom = (element) => {
         case "rights_number":
             return {fieldName: "rights_number", value: element.value};;
         case "rights_date":
-            const val = element.value ? element.value : moment().format('YYYY-MM-DD')
-            const rights_date = moment(val, "YYYY-MM-DD").format("DD.MM.YYYY");
+            const rights_date = element.value ? moment(element.value, "YYYY-MM-DD").format("DD.MM.YYYY") : "";
             return { fieldName: element.fieldName, value: rights_date };
         case "shipping_date":
             const date = moment(element.value, "YYYY-MM-DD").format("DD.MM.YYYY")
