@@ -317,7 +317,7 @@ function MainScreen(props) {
     const expensiveContrAgents = (value) => {
         const check = type.find((el) => el.checked)?.label;
         const agent = getContrAgent(check);
-        const val = value?.split("от")[0].trim() || "";
+        const val = value?.split(" от ")[0].trim() || "";
         if (agent?.length) {
             const res = contrAgents.map((element) => {
                 if (element.items?.length && element.fieldName === "received_person") {
