@@ -3,7 +3,7 @@ import moment from "moment";
 export const changeContrAgentsResult_custom = (element) => {
     switch (element.fieldName) {
         case "shipment_grounds":
-            const value = element?.value?.split("от")[0].trim()
+            const value = element?.value?.split(" от ")[0].trim()
             return {fieldName: "shipment_grounds", value};
         case "rights_number":
             return {fieldName: "rights_number", value: element.value};;
