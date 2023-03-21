@@ -856,7 +856,7 @@ function MainScreen(props) {
             }
     };
     const saveShipment_invoice = async (item, value) => {
-        const invoice = value.split("от")[0].trim();
+        const invoice = value.split(" от ")[0].trim();
         const shipment = invoice_response?.invoiceDictionary.find((el) => el.doc_number === invoice);
         if (shipment) {
             shipment.alertMessage && setAllertMessage(shipment.alertMessage);
@@ -876,7 +876,7 @@ function MainScreen(props) {
         }
     };
     const saveShipment_dogovor = (item, value) => {
-        const dogovor = value.split("от")[0].trim();
+        const dogovor = value.split(" от ")[0].trim();
         const shipment = response?.dogovorDictionary.find((el) => el.doc_number === dogovor);
         shipment && setShipment_grounds(shipment);
         if (dogovor) {
