@@ -13,7 +13,6 @@ function TextFieldControl(props) {
             const max_qty = props.commodityDictionary[0]?.currencies?.find((el) => el.label === props.commodityDictionary[0].value)?.ttn_max_qty;
             const qty = max_qty !== undefined ? max_qty : props.item.ttn_max_qty;
             val = Number(event.target.value) <= Number(qty) ? event.target.value : qty;
-            // debugger;
         }
         setValue(val);
         props.change(props.item, val);
