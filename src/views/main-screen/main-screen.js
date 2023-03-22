@@ -29,7 +29,7 @@ import {
 } from "../../use/change_result_custom.js";
 import { CircularProgress } from "@mui/material";
 import Box from '@mui/material/Box';
-import ModalWindow from "../../components/modal/modal.js";
+import Alert from "@mui/material/Alert";
 
 function MainScreen(props) {
     const [serverResult, setServerResult] = useState([]);
@@ -106,6 +106,9 @@ function MainScreen(props) {
                 const newCommodityDictionary = commodityDictionary?.map((element) => {
                     const value = response.data.columns[element.fieldName];
                     if (element.fieldName === "product_name") {
+                        return {...element, value: value ? value : "", ttn_max_qty: response.data.columns.ttn_max_qty || ""};
+                    }
+                    if (element.fieldName === "product_qty") {
                         return {...element, value: value ? value : "", ttn_max_qty: response.data.columns.ttn_max_qty || ""};
                     }
                     return {...element, value: value ? value : ""};
@@ -939,6 +942,11 @@ function MainScreen(props) {
             alert("Проверьте правильность заполненных полей");
         }
     };
+    useEffect(() => {
+        if (allertMessage) {
+            setTimeout(() => setAllertMessage(false), 5000)
+        }
+    }, [allertMessage]);
 
     return (
         <div id="main-screen">
@@ -947,8 +955,8 @@ function MainScreen(props) {
                     <CircularProgress />
                 </Box>
             }
-            {!server_response && allertMessage && <ModalWindow closeModal={closeModal} />}
-            {!allertMessage && !server_response &&
+            {!server_response && allertMessage && <Alert className="alert" variant="filled" severity="error">Проверьте правильность заполнения товарного раздела.</Alert>}
+            {!server_response &&
                 <ActCard
                     changeStep={(step) => setStep(step)}
                     items={activeFormItems}

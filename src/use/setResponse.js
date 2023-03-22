@@ -105,9 +105,10 @@ const getCurrenciesPerson = (element, response, isControl) => {
 const getCurrencies = (element, response, isControl, label, control_response) => {
     const isArray = Array.isArray(response);
     const mapEntity = response && !isArray ? Object.values(response) : response || [];
+    const sortMapEntity = mapEntity?.sort((a, b) => a.id - b.id);
     return {
         ...element,
-        currencies: mapEntity?.map((el, index) => {
+        currencies: sortMapEntity?.map((el, index) => {
             return { index: index, label: label ? el[label] : el, ttn_max_qty: el.ttnProductQty || "" };
         }) || [],
         controlValue: isControl ? control_response : "",

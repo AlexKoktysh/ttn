@@ -173,7 +173,7 @@ export const commodityDictionary_default = [
         ttn_max_qty: "",
     },
     { index: "1", value: "", label: "Единица измерения", error: false, fieldName: "measure", require: true },
-    { index: "2", value: "", label: "Количество", error: false, fieldName: "product_qty", require: true },
+    { index: "2", value: "", label: "Количество", error: false, fieldName: "product_qty", qty: "", require: true },
     { index: "3", value: "", label: "Цена за ед.,", error: false, fieldName: "product_price", require: true },
     { index: "4", value: "", label: "Стоимость по количеству,", error: false, fieldName: "product_cost", require: true },
     { index: "5", value: "", label: "Ставка НДС, %", error: false, fieldName: "ttn_product_vat", require: true },
