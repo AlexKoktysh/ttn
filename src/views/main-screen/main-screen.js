@@ -635,26 +635,6 @@ function MainScreen(props) {
         type,
         sample_id,
     ]);
-    const changeTnOrTtn = (val) => {
-        const changeItem = tnOrTtn?.map((el) => {
-            if (el.value === Number(val)) {
-                return {...el, checked: true};
-            } else {
-                return {...el, checked: false};
-            }
-        });
-        setTnOrTtn(changeItem);
-    };
-    const changeTemplateView = (val) => {
-        const changeItem = templateView?.map((el) => {
-            if (el.value === Number(val)) {
-                return {...el, checked: true};
-            } else {
-                return {...el, checked: false};
-            }
-        });
-        setTemplateView(changeItem);
-    };
     const changeType = (val) => {
         const changeItem = type?.map((el) => {
             if (el.value === val) {
@@ -679,16 +659,6 @@ function MainScreen(props) {
             const contrAgents_server = setResponseMapper(contrAgents, response?.ttnPersons, res.invoiceDictionary, response);
             setContrAgents(contrAgents_server);
         }
-    };
-    const changeTransportOwner = (val) => {
-        const changeItem = transportOwner?.map((el) => {
-            if (el.value === Number(val)) {
-                return {...el, checked: true};
-            } else {
-                return {...el, checked: false};
-            }
-        });
-        setTransportOwner(changeItem);
     };
     const handleError = (field) => {
         const errorFields = Object.entries(field);
@@ -837,7 +807,7 @@ function MainScreen(props) {
                 return;
         }
     };
-    const x = async () => {
+    const updatePosition = async () => {
         const response = await showSection(productPosition_active);
             const resArray = [...productPosition];
             if (response?.data?.sectionCount >= 1 && response.data.sectionCount + 1 > productPosition.length) {
@@ -865,7 +835,7 @@ function MainScreen(props) {
             shipment.alertMessage && setAllertMessage(shipment.alertMessage);
             setShipment_grounds(shipment);
             const updated = await update_commodity_dictionary_by_invoice({"invoice_number": shipment.doc_number, "invoice_date": shipment.doc_start_date});
-            updated["ajax-response"] === "Успешно добавлена позиция использованного компонента" && x();
+            updated["ajax-response"] === "Успешно добавлена позиция использованного компонента" && updatePosition();
         }
         if (invoice) {
             const res = contrAgents?.map((el) => {
@@ -931,9 +901,6 @@ function MainScreen(props) {
             setContrAgents(res);
         }
     };
-    const closeModal = () => {
-        setAllertMessage(false);
-    };
     const clickAdd = async () => {
         const response = await addSample(serverResult);
         if (response["ajax-response"] === "ТН/ТТН успешно сохранен") {
@@ -947,6 +914,31 @@ function MainScreen(props) {
             setTimeout(() => setAllertMessage(false), 5000)
         }
     }, [allertMessage]);
+    const getItemsForCheckbox = (type) => {
+        switch (type) {
+            case "entity_type":
+                return {items: tnOrTtn, func: setTnOrTtn};
+            case "template_view":
+                return {items: templateView, func: setTemplateView}
+            case "transport_owner":
+                return {items: transportOwner, func: setTransportOwner};
+            default:
+                return null;
+        }
+    };
+    const changeCheckbox = (val, type) => {
+        const {items, func} = getItemsForCheckbox(type);
+        if (items) {
+            const changeItem = items?.map((el) => {
+                if (el.value === Number(val)) {
+                    return {...el, checked: true};
+                } else {
+                    return {...el, checked: false};
+                }
+            });
+            func(changeItem);
+        }
+    };
 
     return (
         <div id="main-screen">
@@ -964,11 +956,9 @@ function MainScreen(props) {
                     addCar={addCar}
                     addProduct={addProduct}
                     tnOrTtn={tnOrTtn}
-                    changeTnOrTtn={changeTnOrTtn}
                     templateView={templateView}
                     type={type}
                     changeType={changeType}
-                    changeTemplateView={changeTemplateView}
                     resSteps={resSteps}
                     isShowSample={isShowSample}
                     clickSample={clickSample}
@@ -984,12 +974,12 @@ function MainScreen(props) {
                     saveShipment={saveShipment}
                     isTTN={isTTN}
                     transportOwner={transportOwner}
-                    changeTransportOwner={changeTransportOwner}
                     showAddButton={props.showAddButton}
                     loader={loader}
                     savePerson={savePerson}
                     updatedInput={updatedInput}
                     clickAdd={clickAdd}
+                    changeCheckbox={changeCheckbox}
                 />
             }
         </div>

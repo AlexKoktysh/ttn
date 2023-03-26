@@ -15,11 +15,11 @@ function ActCard(props) {
     const [transportOwner, setTransportOwner] = useState(props.transportOwner.find((el) => el.checked)?.value || "");
     const changeTnOrTtn = (val) => {
         setEntityType(Number(val));
-        props.changeTnOrTtn(val);
+        props.changeCheckbox(val, "entity_type");
     };
     const changeTemplateView = (val) => {
         setTemplateView(Number(val));
-        props.changeTemplateView(val);
+        props.changeCheckbox(val, "template_view");
     };
     const changeType = (val) => {
         setType(val);
@@ -27,7 +27,7 @@ function ActCard(props) {
     };
     const changeTransportOwner = (val) => {
         setTransportOwner(val);
-        props.changeTransportOwner(val);
+        props.changeCheckbox(val, "transport_owner");
     }; 
     useEffect(() => {
         setLocalPosition(props.productPosition_active);
