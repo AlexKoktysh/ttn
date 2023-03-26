@@ -14,6 +14,11 @@ function AutocompleteField(props) {
         return props.saveField(event.target.value);
       }
     };
+    const newProduct = (event) => {
+      if (props.item.fieldName === "product_name" && event.target.value.length >= 3) {
+        props.getNewCurrencies(event.target.value);
+      }
+  };
     useEffect(() => {
         switch (props.item.fieldName) {
             case "car_model":
@@ -71,7 +76,7 @@ function AutocompleteField(props) {
             onChange={saveField}
             options={props.item.currencies?.map((option) => option)}
             renderInput={(params) => {
-                return <TextField multiline={true} maxRows={3} {...params} label={props.item.label} onBlur={setNewItem} />
+                return <TextField multiline={true} maxRows={3} {...params} label={props.item.label} onChange={newProduct} onBlur={setNewItem} />
             }}
             renderOption={(props, option, { inputValue }) => {
                 const matches = match(option.label, inputValue, { insideWords: true });

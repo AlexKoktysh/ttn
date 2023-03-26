@@ -37,6 +37,7 @@ function TextFieldControl(props) {
                     key={props.item.index}
                     saveField={saveField}
                     loader={props.loader}
+                    getNewCurrencies={props.getNewCurrencies}
                 />
             }
             {props?.item && !props.item.date && !props.item.autocomplete &&
